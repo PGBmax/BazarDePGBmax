@@ -217,11 +217,11 @@ function saveState() {
     const images = [...tier.querySelectorAll(".tier-content img")].map(img => img.src);
     state.tiers.push({ name, color, images });
   }
-  localStorage.setItem("tierlist_state", JSON.stringify(state));
+  localStorage.setItem("tierListData_Ups", JSON.stringify(state));
 }
 
 function loadState() {
-  const raw = localStorage.getItem("tierlist_state");
+  const raw = localStorage.getItem("tierListData_Ups");
   if (!raw) return alert("Aucune sauvegarde trouvée.");
   const state = JSON.parse(raw);
 
@@ -256,7 +256,7 @@ function fixUnrankedHeight() {
 
 function resetTierList() {
   if (!confirm("Voulez-vous vraiment réinitialiser la tier list ? Cette action est irréversible.")) return;
-  localStorage.removeItem("tierlist_state");
+  localStorage.removeItem("tierListData_Ups");
   tierList.innerHTML = "";
   unranked.innerHTML = "";
   loadInitialImages();
@@ -269,7 +269,7 @@ function resetTierList() {
 
 // Appelle cette fonction après le chargement initial des images
 document.addEventListener("DOMContentLoaded", () => {
-  const raw = localStorage.getItem("tierlist_state");
+  const raw = localStorage.getItem("tierListData_Ups");
   if (raw) {
     loadState();
     setTimeout(fixUnrankedHeight, 50);
