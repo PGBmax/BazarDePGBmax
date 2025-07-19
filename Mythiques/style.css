@@ -1,0 +1,278 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #121212;
+  color: #fff;
+  margin: 0;
+  padding: 1rem;
+  text-align: center;
+}
+
+h1, h2 {
+  margin-bottom: 1rem;
+}
+
+.controls {
+  margin-bottom: 1rem;
+}
+
+button {
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  margin: 0.2em;
+  cursor: pointer;
+}
+
+#tier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.tier {
+  display: flex;
+  align-items: stretch;
+  background: #1e1e1e;
+  border: 1px solid #333;
+  min-height: 80px;
+  height: auto;
+  /* Surtout pas de overflow-y ou overflow-x: auto ici ! */
+  overflow: visible; /* <-- Ajoute ceci pour forcer l'affichage sans scroll */
+  position: relative;
+  border-radius: 12px;
+}
+
+.rank-label {
+  width: 100%;
+  min-height: 80px;
+  height: 100%;      /* Prend toute la hauteur du wrapper */
+  font-weight: bold;
+  font-size: 1.2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #777;
+  color: #000;
+  cursor: pointer;
+  border-radius: 0.5em 0 0 0.5em; /* Optionnel : coins arrondis à gauche */
+  box-sizing: border-box;
+}
+
+.tier-content {
+  display: flex;
+  align-items: center;
+  min-height: 80px;
+  padding-left: 10px;
+  gap: 10px;
+  flex: 1;
+  flex-wrap: wrap;
+  /* Surtout pas de overflow-y ou max-height ici ! */
+  overflow: visible; /* <-- Ajoute ceci aussi */
+}
+
+.tier-content img,
+#unranked-container img {
+  height: 64px;
+  cursor: move;
+  border-radius: 4px;
+  transition: transform 0.2s;
+}
+
+img:hover {
+  transform: scale(1.1);
+}
+
+img.dragging {
+  opacity: 0.5;
+}
+
+.tier .remove-btn {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  background: #c00;
+  color: #fff;
+  border: none;
+  padding: 2px 6px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+#unranked-container {
+  background: #222;
+  padding: 10px;
+  min-height: 100px;
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  border-radius: 12px;
+  /* Ajoute ceci pour fixer la hauteur après le premier affichage */
+  height: auto;
+  transition: height 0.3s;
+}
+
+#unranked-container.fixe-height {
+  height: 150px; /* Valeur par défaut à ajuster */
+  min-height: 150px;
+}
+
+.top-bar {
+  display: flex;
+  gap: 0.5em;
+  justify-content: flex-start;
+  margin-bottom: 1em;
+  flex-wrap: wrap;
+}
+
+.rank-label input[type="color"] {
+  position: absolute;
+  bottom: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  border: none;
+  padding: 0;
+}
+
+.rank-label-wrapper {
+  position: relative;
+  width: 100px;      /* Largeur fixe */
+  min-height: 80px;
+  height: 100%;      /* Prend toute la hauteur de la colonne */
+  flex-shrink: 0;
+  display: flex;
+}
+
+.settings-btn {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: #444;
+  color: #fff;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 20px;
+  border-radius: 50%;
+  z-index: 2;
+}
+
+.settings-menu {
+  position: absolute;
+  right: 10px;
+  top: 40px;
+  background: #222;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 10px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10;
+  min-width: 160px;
+}
+
+.settings-menu .delete-col-btn {
+  background: #c00;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.settings-menu input[type="color"] {
+  width: 40px;
+  height: 40px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  position: relative; /* Pour positionner la croix */
+  background: #222;
+  border-radius: 12px;
+  padding: 24px 32px;
+  box-shadow: 0 4px 32px #000a;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 260px;
+  align-items: center;
+}
+
+.modal-content button {
+  background: #c00;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.modal-content input[type="color"] {
+  width: 48px;
+  height: 48px;
+  border: none;
+  cursor: pointer;
+  background: none;
+}
+
+.modal-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.modal-btn-blue {
+  background: #2980ef;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.modal-content .delete-col-btn {
+  background: #c00;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.drag-placeholder {
+  width: 64px;
+  height: 64px;
+  border: 2px dashed #fff;
+  border-radius: 4px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  background: transparent;
+}
+

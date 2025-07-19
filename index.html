@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hub</title>
+    <link rel="shortcut icon" href="https://www.coupcritique.fr/images/types/icon/normal.png">
+    <link rel="stylesheet" href="assets/styles.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #181818;
+            color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+        .top-bar {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            background: #222;
+            padding: 16px 32px;
+            box-shadow: 0 2px 8px #0004;
+        }
+        .top-bar button {
+            background: #2980ef;
+            color: #fff;
+            border: none;
+            padding: 8px 18px;
+            margin-left: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .top-bar button:hover {
+            background: #1761b6;
+        }
+        h1 {
+            text-align: center;
+            color: #f0f0f0;
+            margin-top: 32px;
+            margin-bottom: 0;
+            font-size: 2.2rem;
+            font-weight: bold;
+        }
+        .site-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2.5rem;
+            padding-bottom: 2rem;
+        }
+        .site-bubble {
+            width: 175px;
+            height: 175px;
+            background: #222;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            text-decoration: none;
+            color: #f0f0f0;
+            box-shadow: 0 2px 12px #0006;
+            transition: background 0.3s, transform 0.3s;
+            overflow: hidden;
+        }
+        .site-bubble:hover {
+            background: #2980ef;
+            color: #fff;
+            transform: scale(1.07);
+        }
+        .site-bubble img {
+            width: 90px;
+            height: 90px;
+            margin-bottom: 1rem;
+            object-fit: cover;
+            border-radius: 12px;
+            box-shadow: 0 1px 6px #0004;
+        }
+        .site-bubble span {
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Yo Chazz</h1>
+    <div class="site-container">
+        <a href="Reliques/index.html" class="site-bubble">
+            <img src="Reliques/images/36.png" alt="Fjorad">
+            <span>Reliques</span>
+        </a>
+        <a href="Joyaux/index.html" class="site-bubble">
+            <img src="Joyaux/images/19.png" alt="Fjorad">
+            <span>Joyaux</span>
+        </a>
+        <a href="Mythiques/index.html" class="site-bubble">
+            <img src="Mythiques/images/02.png" alt="Fjorad">
+            <span>Mythiques</span>
+        </a>
+        <a href="Ups/index.html" class="site-bubble">
+            <img src="Ups/images/05.png" alt="Fjorad">
+            <span>Ups</span>
+        </a>
+    </div>
+</body>
+</html>
