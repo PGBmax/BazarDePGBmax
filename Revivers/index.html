@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tier List - Revivers</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="shortcut icon" href="https://www.coupcritique.fr/images/types/icon/normal.png">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+  <div id="capture-zone">
+    <div class="top-bar">
+		<button onclick="window.location.href='../index.html'">🏠 Retourner au hub</button>
+      <button onclick="exportImage()">📸 Exporter en image</button>
+      <button onclick="resetTierList()">🔄 Réinitialiser</button>
+      <button onclick="addTier()">➕ Ajouter une catégorie</button>
+    </div>
+    <h1> </h1>
+    <div id="tier-list"></div>
+    <h2> </h2>
+    <div id="unranked-container" class="drop-zone"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
