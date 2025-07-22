@@ -118,8 +118,8 @@ img.dragging {
 }
 
 #unranked-container.fixe-height {
-  height: 300px; /* Valeur par défaut à ajuster */
-  min-height: 300px;
+  height: 200px; /* Valeur par défaut à ajuster */
+  min-height: 200px;
 }
 
 .top-bar {
