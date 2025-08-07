@@ -25,6 +25,21 @@ function createTier(name = "New", color = "#777") {
   label.spellcheck = false; // Désactive la correction orthographique
   label.style.background = color;
 
+  // Empêche le collage d'images ou de HTML dans le nom de la catégorie
+  label.addEventListener("paste", function(e) {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData("text/plain");
+    document.execCommand("insertText", false, text);
+  });
+
+  // Empêche le glisser-déposer d'images ou de contenu dans le nom de la catégorie
+  label.addEventListener("dragover", function(e) {
+    e.preventDefault();
+  });
+  label.addEventListener("drop", function(e) {
+    e.preventDefault();
+  });
+
   labelWrapper.appendChild(label);
 
   const content = document.createElement("div");
