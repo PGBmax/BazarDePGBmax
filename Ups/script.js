@@ -180,7 +180,7 @@ function addDragEvents(img) {
 }
 
 function loadInitialImages() {
-  const total = 38;
+  const total = 39;
   for (let i = 1; i <= total; i++) {
     const img = document.createElement("img");
 	if (i < 10)
