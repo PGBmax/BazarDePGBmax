@@ -269,6 +269,21 @@ function fixUnrankedHeight() {
   unranked.classList.add('fixe-height');
 }
 
+function updateUnrankedHeight() {
+    const container = document.getElementById('unranked-container');
+    if (container.classList.contains('fixe-height')) {
+        // Ajuste la hauteur selon le nombre d'images
+        const imgs = container.querySelectorAll('img').length;
+        let height = 100 + Math.ceil(imgs / 8) * 70; // Exemple : 8 images par ligne, 70px par ligne
+        container.style.height = height + 'px';
+    } else {
+        container.style.height = 'auto';
+    }
+}
+
+// Appelle cette fonction après chaque modification du contenu
+updateUnrankedHeight();
+
 function resetTierList() {
   if (!confirm("Voulez-vous vraiment réinitialiser la tier list ? Cette action est irréversible.")) return;
   localStorage.removeItem("tierListData_Joyaux");

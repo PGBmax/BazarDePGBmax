@@ -119,7 +119,7 @@ img.dragging {
 
 #unranked-container.fixe-height {
   height: 600px; /* Valeur par défaut à ajuster */
-  min-height: 600px;
+  min-height: 100px;
 }
 
 .top-bar {
