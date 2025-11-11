@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smash or Pass</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="shortcut icon" href="https://www.coupcritique.fr/images/types/icon/normal.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app">
+        <!-- En-tête avec scores et contrôles -->
+        <header class="header">
+            <div class="header-left">
+                <h1>Smash or Pass</h1>
+                <div class="header-controls">
+                    <button class="header-btn" id="reset-btn" title="Réinitialiser">
+                        🔄 Reset
+                    </button>
+                    <button onclick="window.location.href='../index.html'" class="header-btn" id="hub-btn" title="Retour au hub">
+                        🏠 Hub
+                    </button>
+                </div>
+            </div>
+            <div class="scores">
+                <div class="score smash">
+                    <span>♥ Smash</span>
+                    <span id="smash-count">0</span>
+                </div>
+                <div class="score pass">
+                    <span>✗ Pass</span>
+                    <span id="pass-count">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Contenu principal: 2 colonnes -->
+        <main class="main-content">
+            <!-- Colonne gauche: Jeu -->
+            <section class="game-area">
+                <div class="card-zone">
+                    <div class="card" id="current-card">
+                        <img id="card-image" src="" alt="">
+                        <div class="card-info">
+                            <span id="card-counter">0 / 116</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-pass" id="pass-btn">
+                        <span>✗</span>
+                        Pass
+                    </button>
+                    <button class="btn btn-smash" id="smash-btn">
+                        <span>♥</span>
+                        Smash
+                    </button>
+                </div>
+            </section>
+
+            <!-- Colonne droite: Tier List -->
+            <aside class="tier-list">
+                <h2>Tier List</h2>
+                
+                <!-- Section Smash -->
+                <div class="tier smash-tier">
+                    <div class="tier-header">
+                        <span class="tier-label">♥ SMASH</span>
+                        <span class="tier-count" id="smash-tier-count">0</span>
+                    </div>
+                    <div class="tier-images" id="smash-images">
+                        <!-- Images Smash ici -->
+                    </div>
+                </div>
+                
+                <!-- Section Pass -->
+                <div class="tier pass-tier">
+                    <div class="tier-header">
+                        <span class="tier-label">✗ PASS</span>
+                        <span class="tier-count" id="pass-tier-count">0</span>
+                    </div>
+                    <div class="tier-images" id="pass-images">
+                        <!-- Images Pass ici -->
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Écran de fin -->
+        <div class="game-over hidden" id="game-over">
+            <div class="game-over-content">
+                <h2>🎉 Terminé!</h2>
+                <div class="final-stats">
+                    <p>Smash: <span id="final-smash">0</span></p>
+                    <p>Pass: <span id="final-pass">0</span></p>
+                    <p>Taux de Smash: <span id="smash-rate">0%</span></p>
+                </div>
+                <button class="restart-btn" id="restart-btn">🔄 Recommencer</button>
+            </div>
+        </div>
+
+        <!-- Feedback visuel -->
+        <div class="feedback" id="feedback"></div>
+
+        <!-- Notification -->
+        <div class="notification hidden" id="notification">
+            <span id="notification-text"></span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
