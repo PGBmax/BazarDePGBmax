@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="shortcut icon" href="https://www.coupcritique.fr/images/types/icon/normal.png">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
     <div class="app">
@@ -26,13 +27,25 @@
                 </div>
             </div>
             <div class="scores">
-                <div class="score smash">
-                    <span>♥ Smash</span>
-                    <span id="smash-count">0</span>
+                <div class="score tier-s-score">
+                    <span>❤️‍🔥</span>
+                    <span id="score-s">0</span>
                 </div>
-                <div class="score pass">
-                    <span>✗ Pass</span>
-                    <span id="pass-count">0</span>
+                <div class="score tier-a-score">
+                    <span>😳</span>
+                    <span id="score-a">0</span>
+                </div>
+                <div class="score tier-b-score">
+                    <span>🙂</span>
+                    <span id="score-b">0</span>
+                </div>
+                <div class="score tier-c-score">
+                    <span>😬</span>
+                    <span id="score-c">0</span>
+                </div>
+                <div class="score tier-f-score">
+                    <span>🧊</span>
+                    <span id="score-f">0</span>
                 </div>
             </div>
         </header>
@@ -51,14 +64,30 @@
                 </div>
                 
                 <div class="controls">
-                    <button class="btn btn-pass" id="pass-btn">
-                        <span>✗</span>
-                        Pass
+                    <button class="btn btn-tier-s" id="tier-s-btn" data-tier="s">
+                        <span>❤️‍🔥</span>
+                        <span>A Marier</span>
                     </button>
-                    <button class="btn btn-smash" id="smash-btn">
-                        <span>♥</span>
-                        Smash
+                    <button class="btn btn-tier-a" id="tier-a-btn" data-tier="a">
+                        <span>😳</span>
+                        <span>Je prétends réfléchir</span>
                     </button>
+                    <button class="btn btn-tier-b" id="tier-b-btn" data-tier="b">
+                        <span>🙂</span>
+                        <span>Si y'a rien d'autre</span>
+                    </button>
+                    <button class="btn btn-tier-c" id="tier-c-btn" data-tier="c">
+                        <span>😬</span>
+                        <span>Même bourré j'hésite</span>
+                    </button>
+                    <button class="btn btn-tier-f" id="tier-f-btn" data-tier="f">
+                        <span>🧊</span>
+                        <span>Nope total</span>
+                    </button>
+                </div>
+                
+                <div class="instructions">
+                    <span>Clavier : 1-2-3-4-5 | Swipe : ↑S ↓F</span>
                 </div>
             </section>
 
@@ -66,25 +95,58 @@
             <aside class="tier-list">
                 <h2>Tier List</h2>
                 
-                <!-- Section Smash -->
-                <div class="tier smash-tier">
+                <!-- Tier S -->
+                <div class="tier tier-s">
                     <div class="tier-header">
-                        <span class="tier-label">♥ SMASH</span>
-                        <span class="tier-count" id="smash-tier-count">0</span>
+                        <span class="tier-label">❤️‍🔥 A MARIER</span>
+                        <span class="tier-count" id="tier-s-count">0</span>
                     </div>
-                    <div class="tier-images" id="smash-images">
-                        <!-- Images Smash ici -->
+                    <div class="tier-images" id="tier-s-images">
+                        <!-- Images Tier S ici -->
                     </div>
                 </div>
                 
-                <!-- Section Pass -->
-                <div class="tier pass-tier">
+                <!-- Tier A -->
+                <div class="tier tier-a">
                     <div class="tier-header">
-                        <span class="tier-label">✗ PASS</span>
-                        <span class="tier-count" id="pass-tier-count">0</span>
+                        <span class="tier-label">😳 JE PRÉTENDS RÉFLÉCHIR</span>
+                        <span class="tier-count" id="tier-a-count">0</span>
                     </div>
-                    <div class="tier-images" id="pass-images">
-                        <!-- Images Pass ici -->
+                    <div class="tier-images" id="tier-a-images">
+                        <!-- Images Tier A ici -->
+                    </div>
+                </div>
+                
+                <!-- Tier B -->
+                <div class="tier tier-b">
+                    <div class="tier-header">
+                        <span class="tier-label">🙂 SI Y'A RIEN D'AUTRE</span>
+                        <span class="tier-count" id="tier-b-count">0</span>
+                    </div>
+                    <div class="tier-images" id="tier-b-images">
+                        <!-- Images Tier B ici -->
+                    </div>
+                </div>
+                
+                <!-- Tier C -->
+                <div class="tier tier-c">
+                    <div class="tier-header">
+                        <span class="tier-label">😬 MÊME BOURRÉ J'HÉSITE</span>
+                        <span class="tier-count" id="tier-c-count">0</span>
+                    </div>
+                    <div class="tier-images" id="tier-c-images">
+                        <!-- Images Tier C ici -->
+                    </div>
+                </div>
+                
+                <!-- Tier F -->
+                <div class="tier tier-f">
+                    <div class="tier-header">
+                        <span class="tier-label">🧊 NOPE TOTAL</span>
+                        <span class="tier-count" id="tier-f-count">0</span>
+                    </div>
+                    <div class="tier-images" id="tier-f-images">
+                        <!-- Images Tier F ici -->
                     </div>
                 </div>
             </aside>
@@ -95,11 +157,16 @@
             <div class="game-over-content">
                 <h2>🎉 Terminé!</h2>
                 <div class="final-stats">
-                    <p>Smash: <span id="final-smash">0</span></p>
-                    <p>Pass: <span id="final-pass">0</span></p>
-                    <p>Taux de Smash: <span id="smash-rate">0%</span></p>
+                    <p>❤️‍🔥 A Marier: <span id="final-s">0</span></p>
+                    <p>😳 Je prétends réfléchir: <span id="final-a">0</span></p>
+                    <p>🙂 Si y'a rien d'autre: <span id="final-b">0</span></p>
+                    <p>😬 Même bourré j'hésite: <span id="final-c">0</span></p>
+                    <p>🧊 Nope total: <span id="final-f">0</span></p>
                 </div>
-                <button class="restart-btn" id="restart-btn">🔄 Recommencer</button>
+                <div class="game-over-buttons">
+                    <button class="export-btn" id="export-btn">📸 Exporter en PNG</button>
+                    <button class="restart-btn" id="restart-btn">🔄 Recommencer</button>
+                </div>
             </div>
         </div>
 

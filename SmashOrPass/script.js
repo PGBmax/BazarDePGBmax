@@ -1,29 +1,59 @@
-class SmashOrPassGame {
+class TierListGame {
     constructor() {
-        // État du jeu
-        this.allImages = []; // Liste complète des images (jamais modifiée)
-        this.processedImages = new Set(); // Images déjà traitées (Set pour éviter les doublons)
-        this.smashList = [];
-        this.passList = [];
+        // État du jeu avec 5 tiers
+        this.allImages = [];
+        this.processedImages = new Set();
+        this.tiers = {
+            s: [], // A Marier
+            a: [], // Je prétends réfléchir  
+            b: [], // Si y'a rien d'autre
+            c: [], // Même bourré j'hésite
+            f: []  // Nope total
+        };
         this.currentImagePath = null;
         
-        // Unique storage key for this site
-        this.storageKey = 'smashOrPass_SmashOrPass';
+        // Éléments DOM - Boutons
+        this.tierButtons = {
+            s: document.getElementById('tier-s-btn'),
+            a: document.getElementById('tier-a-btn'),
+            b: document.getElementById('tier-b-btn'),
+            c: document.getElementById('tier-c-btn'),
+            f: document.getElementById('tier-f-btn')
+        };
         
-        // Éléments DOM
+        // Éléments DOM - Affichage
         this.cardImage = document.getElementById('card-image');
         this.cardCounter = document.getElementById('card-counter');
-        this.smashBtn = document.getElementById('smash-btn');
-        this.passBtn = document.getElementById('pass-btn');
-        this.smashCountEl = document.getElementById('smash-count');
-        this.passCountEl = document.getElementById('pass-count');
-        this.smashTierCountEl = document.getElementById('smash-tier-count');
-        this.passTierCountEl = document.getElementById('pass-tier-count');
-        this.smashImagesEl = document.getElementById('smash-images');
-        this.passImagesEl = document.getElementById('pass-images');
+        this.notification = document.getElementById('notification');
         this.gameOverEl = document.getElementById('game-over');
         this.restartBtn = document.getElementById('restart-btn');
-        this.notification = document.getElementById('notification');
+        
+        // Compteurs header
+        this.scoreElements = {
+            s: document.getElementById('score-s'),
+            a: document.getElementById('score-a'),
+            b: document.getElementById('score-b'),
+            c: document.getElementById('score-c'),
+            f: document.getElementById('score-f')
+        };
+        
+        // Compteurs tier list
+        this.tierCountElements = {
+            s: document.getElementById('tier-s-count'),
+            a: document.getElementById('tier-a-count'),
+            b: document.getElementById('tier-b-count'),
+            c: document.getElementById('tier-c-count'),
+            f: document.getElementById('tier-f-count')
+        };
+        
+        // Conteneurs d'images
+        this.tierImageElements = {
+            s: document.getElementById('tier-s-images'),
+            a: document.getElementById('tier-a-images'),
+            b: document.getElementById('tier-b-images'),
+            c: document.getElementById('tier-c-images'),
+            f: document.getElementById('tier-f-images')
+        };
         
         // État pour les animations
         this.isAnimating = false;
@@ -32,21 +62,13 @@ class SmashOrPassGame {
     }
     
     init() {
-        // Show welcome popup on every launch
-        this.showWelcomePopup();
-        
-        // Génerer la liste complète des images
         this.generateAllImages();
         
-        // Charger automatiquement si une sauvegarde existe
         if (this.loadFromStorage()) {
             this.showNotification('🔄 Session précédente chargée');
         }
         
-        // Configurer les événements
         this.setupEventListeners();
-        
-        // Charger la première image
         this.loadNextImage();
         this.updateDisplay();
     }
@@ -56,7 +78,6 @@ class SmashOrPassGame {
         for (let i = 1; i <= 237; i++) {
             this.allImages.push(`images/${i.toString().padStart(2, '0')}.png`);
         }
-        // Mélanger une seule fois au début
         this.shuffleArray(this.allImages);
     }
     
@@ -68,12 +89,17 @@ class SmashOrPassGame {
     }
     
     setupEventListeners() {
-        // Boutons de choix
-        this.smashBtn?.addEventListener('click', () => this.makeChoice('smash'));
-        this.passBtn?.addEventListener('click', () => this.makeChoice('pass'));
+        // Boutons de tier
+        Object.keys(this.tierButtons).forEach(tier => {
+            this.tierButtons[tier]?.addEventListener('click', () => this.makeChoice(tier));
+        });
         
         // Bouton restart
         this.restartBtn?.addEventListener('click', () => this.restart());
+        
+        // Bouton export
+        const exportBtn = document.getElementById('export-btn');
+        exportBtn?.addEventListener('click', () => this.exportTierListAsPNG());
         
         // Boutons header
         const resetBtn = document.getElementById('reset-btn');
@@ -82,81 +108,83 @@ class SmashOrPassGame {
         resetBtn?.addEventListener('click', () => this.confirmReset());
         hubBtn?.addEventListener('click', () => this.goToHub());
         
-        // Clavier
+        // Clavier (1-5 pour les tiers)
         document.addEventListener('keydown', (e) => {
             if (this.isAnimating) return;
             
-            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
-                this.makeChoice('pass');
-            } else if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
-                this.makeChoice('smash');
+            const keyToTier = {
+                '1': 's',
+                '2': 'a', 
+                '3': 'b',
+                '4': 'c',
+                '5': 'f'
+            };
+            
+            if (keyToTier[e.key]) {
+                this.makeChoice(keyToTier[e.key]);
             }
         });
         
-        // Touch/swipe pour mobile (simplifié)
-        let startX = 0;
+        // Touch/swipe simplifié
+        let startY = 0;
         const currentCard = document.getElementById('current-card');
         
         currentCard?.addEventListener('touchstart', (e) => {
             if (this.isAnimating) return;
-            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
         });
         
         currentCard?.addEventListener('touchend', (e) => {
             if (this.isAnimating) return;
-            const endX = e.changedTouches[0].clientX;
-            const diff = startX - endX;
+            const endY = e.changedTouches[0].clientY;
+            const diff = startY - endY;
             
-            if (Math.abs(diff) > 100) { // Seuil de swipe
-                if (diff > 0) {
-                    this.makeChoice('pass'); // Swipe left = pass
-                } else {
-                    this.makeChoice('smash'); // Swipe right = smash
+            if (Math.abs(diff) > 100) {
+                if (diff > 50) {
+                    this.makeChoice('s'); // Swipe up = tier S
+                } else if (diff < -50) {
+                    this.makeChoice('f'); // Swipe down = tier F
                 }
             }
         });
     }
     
-    makeChoice(choice) {
-        if (this.isAnimating || !this.currentImagePath) return;
+    makeChoice(tier) {
+        if (this.isAnimating || !this.currentImagePath || !this.tiers[tier]) return;
         
         this.isAnimating = true;
         
-        // Extraire le numéro de l'image
         const imageNumber = this.getImageNumber(this.currentImagePath);
-        
-        // Ajouter à la liste appropriée
         const imageData = {
             path: this.currentImagePath,
-            number: imageNumber
+            number: imageNumber,
+            tier: tier
         };
         
-        if (choice === 'smash') {
-            this.smashList.push(imageData);
-            this.showFeedback('♥', 'smash');
-        } else {
-            this.passList.push(imageData);
-            this.showFeedback('✗', 'pass');
-        }
+        // Ajouter à la tier appropriée
+        this.tiers[tier].push(imageData);
         
         // Marquer comme traité
         this.processedImages.add(this.currentImagePath);
         
-        // Animation et passage à l'image suivante
-        this.animateChoice(choice);
+        // Feedback visuel
+        this.showFeedback(tier);
         
-        // Sauvegarder automatiquement
+        // Animation
+        this.animateChoice(tier);
+        
+        // Sauvegarder
         this.saveToStorage();
         
-        // Continuer après l'animation
+        // Continuer
         setTimeout(() => {
             this.loadNextImage();
             this.updateDisplay();
             this.updateTierLists();
             this.isAnimating = false;
             
-            // Vérifier si le jeu est fini
-            if (this.processedImages.size >= this.allImages.length) {
+            // For testing: trigger game over after 10 items instead of all
+            if (this.processedImages.size >= 237) {
                 this.showGameOver();
             }
         }, 500);
@@ -168,7 +196,6 @@ class SmashOrPassGame {
     }
     
     loadNextImage() {
-        // Trouver la prochaine image non traitée
         this.currentImagePath = this.allImages.find(img => !this.processedImages.has(img));
         
         if (this.currentImagePath && this.cardImage) {
@@ -178,13 +205,20 @@ class SmashOrPassGame {
     }
     
     updateDisplay() {
-        // Mettre à jour les compteurs
-        if (this.smashCountEl) this.smashCountEl.textContent = this.smashList.length;
-        if (this.passCountEl) this.passCountEl.textContent = this.passList.length;
-        if (this.smashTierCountEl) this.smashTierCountEl.textContent = this.smashList.length;
-        if (this.passTierCountEl) this.passTierCountEl.textContent = this.passList.length;
+        // Mettre à jour tous les compteurs
+        Object.keys(this.tiers).forEach(tier => {
+            const count = this.tiers[tier].length;
+            
+            if (this.scoreElements[tier]) {
+                this.scoreElements[tier].textContent = count;
+            }
+            
+            if (this.tierCountElements[tier]) {
+                this.tierCountElements[tier].textContent = count;
+            }
+        });
         
-        // Mettre à jour le compteur de progression
+        // Compteur de progression
         if (this.cardCounter) {
             const processed = this.processedImages.size;
             const total = this.allImages.length;
@@ -193,22 +227,16 @@ class SmashOrPassGame {
     }
     
     updateTierLists() {
-        // Vider et reconstruire les listes visuelles
-        if (this.smashImagesEl) {
-            this.smashImagesEl.innerHTML = '';
-            this.smashList.forEach(imageData => {
+        Object.keys(this.tiers).forEach(tier => {
+            const container = this.tierImageElements[tier];
+            if (!container) return;
+            
+            container.innerHTML = '';
+            this.tiers[tier].forEach(imageData => {
                 const element = this.createImageElement(imageData);
-                this.smashImagesEl.appendChild(element);
+                container.appendChild(element);
             });
-        }
-        
-        if (this.passImagesEl) {
-            this.passImagesEl.innerHTML = '';
-            this.passList.forEach(imageData => {
-                const element = this.createImageElement(imageData);
-                this.passImagesEl.appendChild(element);
-            });
-        }
+        });
     }
     
     createImageElement(imageData) {
@@ -216,41 +244,52 @@ class SmashOrPassGame {
         div.className = 'tier-img';
         div.innerHTML = `
             <img src="${imageData.path}" alt="Image ${imageData.number}">
-            <span class="img-number">${imageData.number}</span>
         `;
         return div;
     }
     
-    showFeedback(icon, type) {
+    showFeedback(tier) {
         const feedback = document.getElementById('feedback');
-        if (feedback) {
-            feedback.textContent = icon;
-            feedback.className = `feedback ${type}`;
-            feedback.style.display = 'block';
-            
-            setTimeout(() => {
-                feedback.style.display = 'none';
-            }, 800);
-        }
+        if (!feedback) return;
+        
+        const tierEmojis = {
+            s: '❤️‍🔥',
+            a: '😳',
+            b: '🙂', 
+            c: '😬',
+            f: '🧊'
+        };
+        
+        feedback.textContent = tierEmojis[tier] || '✨';
+        feedback.className = `feedback tier-${tier}`;
+        feedback.style.display = 'block';
+        
+        setTimeout(() => {
+            feedback.style.display = 'none';
+        }, 800);
     }
     
-    animateChoice(choice) {
+    animateChoice(tier) {
         const card = document.getElementById('current-card');
-        if (card) {
-            card.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
-            if (choice === 'smash') {
-                card.style.transform = 'translateX(100%) rotate(15deg)';
-            } else {
-                card.style.transform = 'translateX(-100%) rotate(-15deg)';
-            }
-            card.style.opacity = '0.3';
-            
-            setTimeout(() => {
-                card.style.transition = '';
-                card.style.transform = '';
-                card.style.opacity = '';
-            }, 500);
-        }
+        if (!card) return;
+        
+        const directions = {
+            s: 'translateY(-100%) scale(1.1)', // Vers le haut
+            a: 'translateX(50%) translateY(-50%) rotate(10deg)',
+            b: 'translateX(0%) scale(0.9)',
+            c: 'translateX(-50%) translateY(50%) rotate(-10deg)', 
+            f: 'translateY(100%) scale(0.8)' // Vers le bas
+        };
+        
+        card.style.transition = 'transform 0.5s ease, opacity 0.5s ease';
+        card.style.transform = directions[tier] || 'scale(0.8)';
+        card.style.opacity = '0.3';
+        
+        setTimeout(() => {
+            card.style.transition = '';
+            card.style.transform = '';
+            card.style.opacity = '';
+        }, 500);
     }
     
     // ===== SYSTÈME DE SAUVEGARDE =====
@@ -258,28 +297,24 @@ class SmashOrPassGame {
     saveToStorage() {
         const gameState = {
             processedImages: Array.from(this.processedImages),
-            smashList: this.smashList,
-            passList: this.passList,
-            allImages: this.allImages, // Sauvegarder l'ordre mélangé
+            tiers: this.tiers,
+            allImages: this.allImages,
             timestamp: new Date().toISOString()
         };
         
-        localStorage.setItem(this.storageKey, JSON.stringify(gameState));
+        localStorage.setItem('tier-list-auto', JSON.stringify(gameState));
     }
     
     loadFromStorage() {
         try {
-            const saved = localStorage.getItem(this.storageKey);
+            const saved = localStorage.getItem('tier-list-auto');
             if (!saved) return false;
             
             const gameState = JSON.parse(saved);
             
-            // Restaurer l'état
             this.processedImages = new Set(gameState.processedImages || []);
-            this.smashList = gameState.smashList || [];
-            this.passList = gameState.passList || [];
+            this.tiers = gameState.tiers || { s: [], a: [], b: [], c: [], f: [] };
             
-            // Si on a un ordre mélangé sauvé, l'utiliser
             if (gameState.allImages && gameState.allImages.length > 0) {
                 this.allImages = gameState.allImages;
             }
@@ -301,12 +336,11 @@ class SmashOrPassGame {
     }
     
     goToHub() {
-        // Save before going to hub (no reset)
-        this.saveToStorage();
-        this.showNotification('💾 Progression sauvegardée !');
-        setTimeout(() => {
-            window.location.href = '../index.html';
-        }, 1000);
+        if (confirm('🏠 Retourner au hub ? La progression sera sauvegardée automatiquement.')) {
+            this.saveToStorage();
+            this.resetGame();
+            this.showNotification('🏠 Retour au hub - Progression sauvegardée !');
+        }
     }
     
     restart() {
@@ -314,25 +348,19 @@ class SmashOrPassGame {
     }
     
     resetGame() {
-        // Effacer la sauvegarde spécifique à ce site
-        localStorage.removeItem(this.storageKey);
+        localStorage.removeItem('tier-list-auto');
         
-        // Reset complet
         this.processedImages.clear();
-        this.smashList = [];
-        this.passList = [];
+        this.tiers = { s: [], a: [], b: [], c: [], f: [] };
         this.currentImagePath = null;
         this.isAnimating = false;
         
-        // Remélanger les images
         this.shuffleArray(this.allImages);
         
-        // Cacher game over
         if (this.gameOverEl) {
             this.gameOverEl.classList.add('hidden');
         }
         
-        // Recharger
         this.loadNextImage();
         this.updateDisplay();
         this.updateTierLists();
@@ -340,127 +368,235 @@ class SmashOrPassGame {
     
     showGameOver() {
         const total = this.processedImages.size;
-        const smashCount = this.smashList.length;
-        const passCount = this.passList.length;
-        const smashRate = total > 0 ? Math.round((smashCount / total) * 100) : 0;
         
         // Mettre à jour les statistiques finales
-        const finalSmash = document.getElementById('final-smash');
-        const finalPass = document.getElementById('final-pass');
-        const smashRateEl = document.getElementById('smash-rate');
+        const finalElements = {
+            s: document.getElementById('final-s'),
+            a: document.getElementById('final-a'),
+            b: document.getElementById('final-b'),
+            c: document.getElementById('final-c'),
+            f: document.getElementById('final-f')
+        };
         
-        if (finalSmash) finalSmash.textContent = smashCount;
-        if (finalPass) finalPass.textContent = passCount;
-        if (smashRateEl) smashRateEl.textContent = `${smashRate}%`;
+        Object.keys(this.tiers).forEach(tier => {
+            if (finalElements[tier]) {
+                finalElements[tier].textContent = this.tiers[tier].length;
+            }
+        });
         
-        // Afficher l'écran de fin
         if (this.gameOverEl) {
             this.gameOverEl.classList.remove('hidden');
         }
         
-        // Show the goofy completion popup
-        this.showCompletionPopup();
+        // Jouer le son de fin de jeu
+        this.playGameOverSound();
         
-        this.showNotification('🎉 Terminé ! Tous les personnages ont été classés.');
+        this.showNotification('🎉 Terminé ! Tous les personnages ont été classés dans la tier list.');
     }
     
-    showCompletionPopup() {
-        // Play the goofy sound
+    async exportTierListAsPNG() {
         try {
-            const audio = new Audio('what-da-hell.mp3');
-            audio.volume = 0.7;
-            audio.play().catch(e => console.log('Audio play failed:', e));
-        } catch (e) {
-            console.log('Audio loading failed:', e);
-        }
-        
-        // Create popup overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'completion-popup-overlay';
-        
-        // Create popup content
-        const popup = document.createElement('div');
-        popup.className = 'completion-popup';
-        popup.innerHTML = `
-            <div class="completion-popup-content">
-                <h2>🎉 FÉLICITATIONS ! 🎉</h2>
-                <p>Tu es officiellement le plus gros daleux de<br><strong>RAID: Shadow Legends !</strong></p>
-                <div class="completion-stats">
-                    <div>❤️ SMASH: ${this.smashList.length}</div>
-                    <div>❌ PASS: ${this.passList.length}</div>
-                </div>
-                <p class="completion-credit">- Site fait par PG_Banania</p>
-                <button class="completion-close-btn" onclick="this.closest('.completion-popup-overlay').remove()">
-                    Fermer
-                </button>
-            </div>
-        `;
-        
-        overlay.appendChild(popup);
-        document.body.appendChild(overlay);
-        
-        // Add click outside to close
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                overlay.remove();
+            // Cacher temporairement les éléments de jeu qui ne doivent pas apparaître
+            const gameArea = document.querySelector('.game-area');
+            const gameOver = document.getElementById('game-over');
+            const notification = document.getElementById('notification');
+            
+            if (gameArea) gameArea.style.display = 'none';
+            if (gameOver) gameOver.style.display = 'none';
+            if (notification) notification.style.display = 'none';
+            
+            // Créer un canvas à partir de la tier list
+            const tierList = document.querySelector('.tier-list');
+            if (!tierList) {
+                this.showNotification('❌ Impossible de trouver la tier list');
+                return;
             }
-        });
+            
+            // Sauvegarder les styles originaux qui limitent la hauteur
+            const originalStyles = new Map();
+            const tierImages = document.querySelectorAll('.tier-images');
+            const tierListElement = tierList;
+            
+            // Créer une feuille de style temporaire pour forcer l'affichage complet
+            const tempStyle = document.createElement('style');
+            tempStyle.setAttribute('data-temp-export', 'true');
+            tempStyle.textContent = `
+                .tier-list { 
+                    max-height: none !important; 
+                    overflow: visible !important; 
+                }
+                .tier-images { 
+                    max-height: none !important; 
+                    overflow: visible !important; 
+                    height: auto !important; 
+                }
+            `;
+            document.head.appendChild(tempStyle);
+            
+            // Sauvegarder et modifier les styles inline aussi
+            originalStyles.set(tierListElement, {
+                maxHeight: tierListElement.style.maxHeight,
+                height: tierListElement.style.height,
+                overflow: tierListElement.style.overflow
+            });
+            
+            tierListElement.style.maxHeight = 'none';
+            tierListElement.style.height = 'auto';
+            tierListElement.style.overflow = 'visible';
+            
+            tierImages.forEach((element) => {
+                originalStyles.set(element, {
+                    maxHeight: element.style.maxHeight,
+                    height: element.style.height,
+                    overflow: element.style.overflow
+                });
+                element.style.maxHeight = 'none';
+                element.style.height = 'auto';
+                element.style.overflow = 'visible';
+            });
+            
+            // Attendre un peu pour que le DOM se mette à jour
+            await new Promise(resolve => setTimeout(resolve, 500));
+            
+            // Utiliser html2canvas si disponible
+            if (typeof html2canvas !== 'undefined') {
+                const canvas = await html2canvas(tierList, {
+                    backgroundColor: '#1a1a1a',
+                    scale: 1.5, // Bonne résolution mais pas trop lourde
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true,
+                    width: tierList.scrollWidth,
+                    height: tierList.scrollHeight,
+                    scrollX: 0,
+                    scrollY: 0
+                });
+                
+                // Télécharger l'image
+                const link = document.createElement('a');
+                link.download = `tier-list-${new Date().toISOString().slice(0, 10)}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                this.showNotification('📸 Tier list exportée avec succès !');
+            } else {
+                // Fallback: méthode manuelle
+                this.exportTierListManually();
+            }
+            
+            // Restaurer les styles originaux
+            originalStyles.forEach((styles, element) => {
+                element.style.maxHeight = styles.maxHeight;
+                element.style.height = styles.height;
+                element.style.overflow = styles.overflow;
+            });
+            
+            // Supprimer la feuille de style temporaire
+            const exportTempStyle = document.querySelector('style[data-temp-export]');
+            if (exportTempStyle) {
+                exportTempStyle.remove();
+            }
+            
+        } catch (error) {
+            console.error('Erreur lors de l\'export:', error);
+            this.showNotification('❌ Erreur lors de l\'export');
+            
+            // Nettoyer en cas d'erreur aussi
+            const tempStyle = document.querySelector('style[data-temp-export]');
+            if (tempStyle) {
+                tempStyle.remove();
+            }
+        } finally {
+            // Restaurer l'affichage
+            const gameArea = document.querySelector('.game-area');
+            const gameOver = document.getElementById('game-over');
+            
+            if (gameArea) gameArea.style.display = '';
+            if (gameOver) gameOver.style.display = '';
+        }
     }
     
-    showWelcomePopup() {
-        // Array of goofy welcome messages in French
-        const welcomeMessages = [
-            "🎮 Prépare-toi à juger les plus beaux champions de RAID !",
-            "💀 Es-tu prêt à smash ou pass 237 champions ? Courage !",
-            "🔥 Attention ! Zone de daleux extrêmes détectée !",
-            "⚔️ Bienvenue dans l'arène du SMASH OR PASS !",
-            "🎯 Mission : Séparer les beaux des moins beaux !",
-            "💎 237 champions t'attendent... Que le tri commence !",
-            "🌟 Prêt à découvrir tes goûts douteux ? C'est parti !",
-            "🎪 Dedicace a PG_Banania !"
-        ];
+    exportTierListManually() {
+        // Méthode alternative sans bibliothèque externe
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
         
-        // Pick a random message
-        const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+        // Taille du canvas
+        canvas.width = 800;
+        canvas.height = 1200;
         
-        // Create popup overlay
-        const overlay = document.createElement('div');
-        overlay.className = 'welcome-popup-overlay';
+        // Fond
+        ctx.fillStyle = '#1a1a1a';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Create popup content
-        const popup = document.createElement('div');
-        popup.className = 'welcome-popup';
-        popup.innerHTML = `
-            <div class="welcome-popup-content">
-                <h2>🎉 BIENVENUE ! 🎉</h2>
-                <p>${randomMessage}</p>
-                <div class="welcome-info">
-                    <div>🎯 <strong>237 Champions</strong> à juger</div>
-                    <div>⌨️ Utilise les <strong>Boutons</strong> pour <strong>Smash And Pass</strong></div>
-                </div>
-                <button class="welcome-start-btn" onclick="this.closest('.welcome-popup-overlay').remove()">
-                    🚀 COMMENCER LE TRI !
-                </button>
-            </div>
-        `;
+        // Titre
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 32px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Tier List', canvas.width / 2, 50);
         
-        overlay.appendChild(popup);
-        document.body.appendChild(overlay);
+        // Couleurs des tiers
+        const tierColors = {
+            s: '#ff6b9d',
+            a: '#ff9800',
+            b: '#4caf50',
+            c: '#607d8b',
+            f: '#2196f3'
+        };
         
-        // Add click outside to close
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) {
-                overlay.remove();
+        const tierLabels = {
+            s: '❤️‍🔥 A MARIER',
+            a: '😳 JE PRÉTENDS RÉFLÉCHIR',
+            b: '🙂 SI Y\'A RIEN D\'AUTRE',
+            c: '😬 MÊME BOURRÉ J\'HÉSITE',
+            f: '🧊 NOPE TOTAL'
+        };
+        
+        let y = 100;
+        
+        Object.keys(this.tiers).forEach(tier => {
+            const count = this.tiers[tier].length;
+            
+            // Header du tier
+            ctx.fillStyle = tierColors[tier];
+            ctx.fillRect(50, y, canvas.width - 100, 60);
+            
+            // Label du tier
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 20px Inter, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(tierLabels[tier], 70, y + 35);
+            
+            // Compteur
+            ctx.textAlign = 'right';
+            ctx.fillText(count.toString(), canvas.width - 70, y + 35);
+            
+            y += 80;
+            
+            // Note: Les images nécessiteraient un chargement asynchrone
+            // Pour l'instant, on affiche juste le nombre
+            if (count > 0) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.1)';
+                ctx.fillRect(50, y, canvas.width - 100, 60);
+                
+                ctx.fillStyle = '#ffffff';
+                ctx.font = '16px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`${count} personnage(s) dans ce tier`, canvas.width / 2, y + 35);
+                
+                y += 80;
             }
+            
+            y += 20; // Espacement entre les tiers
         });
         
-        // Add keyboard support (Enter or Space to close)
-        document.addEventListener('keydown', function handleWelcomeKeys(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                overlay.remove();
-                document.removeEventListener('keydown', handleWelcomeKeys);
-            }
-        });
+        // Télécharger
+        const link = document.createElement('a');
+        link.download = `tier-list-simple-${new Date().toISOString().slice(0, 10)}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        
+        this.showNotification('📸 Tier list exportée (version simplifiée) !');
     }
     
     showNotification(message) {
@@ -477,14 +613,36 @@ class SmashOrPassGame {
             this.notification.classList.add('hidden');
         }, 3000);
     }
+    
+    playGameOverSound() {
+        try {
+            // Créer un élément audio pour le son de fin
+            const audio = new Audio();
+            
+            // Jouer le son "what-da-hell.mp3" parce que pourquoi pas ! 😂
+            audio.src = 'what-da-hell.mp3';
+            
+            // Régler le volume
+            audio.volume = 0.7; // Un peu plus fort pour "what da hell" 😄
+            
+            // Jouer le son
+            audio.play().catch(error => {
+                console.log('Impossible de jouer le son automatiquement:', error);
+                // Les navigateurs bloquent souvent l'autoplay audio
+            });
+            
+        } catch (error) {
+            console.error('Erreur lors de la lecture du son:', error);
+        }
+    }
 }
 
 // Initialiser le jeu
 document.addEventListener('DOMContentLoaded', () => {
-    new SmashOrPassGame();
+    new TierListGame();
 });
 
-// Empêcher le scroll sur mobile lors du swipe
+// Empêcher le scroll sur mobile
 document.addEventListener('touchmove', (e) => {
     if (e.target.closest('#current-card')) {
         e.preventDefault();

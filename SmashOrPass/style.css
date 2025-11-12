@@ -75,27 +75,44 @@ body {
 
 .scores {
     display: flex;
-    gap: 30px;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 .score {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 10px 15px;
-    border-radius: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
     background: rgba(20, 20, 20, 0.6);
-    min-width: 80px;
+    min-width: 50px;
+    font-size: 0.9rem;
 }
 
-.score.smash {
-    background: rgba(139, 120, 221, 0.3);
-    color: #b8a9dc;
+.score.tier-s-score {
+    background: rgba(255, 107, 157, 0.3);
+    color: #ff6b9d;
 }
 
-.score.pass {
-    background: rgba(60, 50, 90, 0.4);
-    color: #8b78dd;
+.score.tier-a-score {
+    background: rgba(255, 152, 0, 0.3);
+    color: #ff9800;
+}
+
+.score.tier-b-score {
+    background: rgba(76, 175, 80, 0.3);
+    color: #4caf50;
+}
+
+.score.tier-c-score {
+    background: rgba(96, 125, 139, 0.3);
+    color: #607d8b;
+}
+
+.score.tier-f-score {
+    background: rgba(33, 150, 243, 0.3);
+    color: #2196f3;
 }
 
 .score span:first-child {
@@ -178,46 +195,100 @@ body {
 
 /* Boutons de contrôle */
 .controls {
-    display: flex;
-    gap: 50px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 15px;
     margin-bottom: 30px;
+    max-width: 600px;
 }
 
 .btn {
-    width: 80px;
+    width: 100px;
     height: 80px;
     border: none;
-    border-radius: 50%;
+    border-radius: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 3px;
     cursor: pointer;
     font-family: inherit;
     font-weight: 600;
     transition: all 0.3s ease;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    position: relative;
+    overflow: hidden;
 }
 
 .btn span:first-child {
-    font-size: 2rem;
+    font-size: 1.5rem;
 }
 
 .btn span:last-child {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    font-size: 0.65rem;
+    text-align: center;
+    line-height: 1.1;
 }
 
-.btn-pass {
-    background: linear-gradient(135deg, #6c5ce7, #5a4fcf);
+/* Tier S - A Marier */
+.btn-tier-s {
+    background: linear-gradient(135deg, #ff6b9d, #e91e63);
     color: white;
 }
 
-.btn-smash {
-    background: linear-gradient(135deg, #8b78dd, #7368c7);
+.btn-tier-s:hover {
+    background: linear-gradient(135deg, #ff7ba8, #f06292);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(255, 107, 157, 0.4);
+}
+
+/* Tier A - Je prétends réfléchir */
+.btn-tier-a {
+    background: linear-gradient(135deg, #ff9800, #f57c00);
     color: white;
+}
+
+.btn-tier-a:hover {
+    background: linear-gradient(135deg, #ffa726, #ff8f00);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(255, 152, 0, 0.4);
+}
+
+/* Tier B - Si y'a rien d'autre */
+.btn-tier-b {
+    background: linear-gradient(135deg, #4caf50, #388e3c);
+    color: white;
+}
+
+.btn-tier-b:hover {
+    background: linear-gradient(135deg, #66bb6a, #4caf50);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(76, 175, 80, 0.4);
+}
+
+/* Tier C - Même bourré j'hésite */
+.btn-tier-c {
+    background: linear-gradient(135deg, #607d8b, #455a64);
+    color: white;
+}
+
+.btn-tier-c:hover {
+    background: linear-gradient(135deg, #78909c, #546e7a);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(96, 125, 139, 0.4);
+}
+
+/* Tier F - Nope total */
+.btn-tier-f {
+    background: linear-gradient(135deg, #2196f3, #1565c0);
+    color: white;
+}
+
+.btn-tier-f:hover {
+    background: linear-gradient(135deg, #42a5f5, #1976d2);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(33, 150, 243, 0.4);
 }
 
 .btn:hover {
@@ -263,14 +334,59 @@ body {
     background: rgba(20, 20, 20, 0.6);
 }
 
-.tier.smash-tier {
-    border-color: rgba(184, 169, 220, 0.7);
-    background: rgba(139, 120, 221, 0.2);
+/* Tier S */
+.tier.tier-s {
+    border-color: rgba(255, 107, 157, 0.7);
+    background: rgba(255, 107, 157, 0.15);
 }
 
-.tier.pass-tier {
-    border-color: rgba(108, 92, 231, 0.7);
-    background: rgba(108, 92, 231, 0.15);
+.tier-s .tier-header {
+    background: rgba(255, 107, 157, 0.4);
+    color: #ff6b9d;
+}
+
+/* Tier A */
+.tier.tier-a {
+    border-color: rgba(255, 152, 0, 0.7);
+    background: rgba(255, 152, 0, 0.15);
+}
+
+.tier-a .tier-header {
+    background: rgba(255, 152, 0, 0.4);
+    color: #ff9800;
+}
+
+/* Tier B */
+.tier.tier-b {
+    border-color: rgba(76, 175, 80, 0.7);
+    background: rgba(76, 175, 80, 0.15);
+}
+
+.tier-b .tier-header {
+    background: rgba(76, 175, 80, 0.4);
+    color: #4caf50;
+}
+
+/* Tier C */
+.tier.tier-c {
+    border-color: rgba(96, 125, 139, 0.7);
+    background: rgba(96, 125, 139, 0.15);
+}
+
+.tier-c .tier-header {
+    background: rgba(96, 125, 139, 0.4);
+    color: #607d8b;
+}
+
+/* Tier F */
+.tier.tier-f {
+    border-color: rgba(33, 150, 243, 0.7);
+    background: rgba(33, 150, 243, 0.15);
+}
+
+.tier-f .tier-header {
+    background: rgba(33, 150, 243, 0.4);
+    color: #2196f3;
 }
 
 .tier-header {
@@ -280,16 +396,6 @@ body {
     padding: 15px 20px;
     background: rgba(15, 15, 15, 0.8);
     font-weight: 600;
-}
-
-.smash-tier .tier-header {
-    background: rgba(139, 120, 221, 0.4);
-    color: #b8a9dc;
-}
-
-.pass-tier .tier-header {
-    background: rgba(108, 92, 231, 0.4);
-    color: #8b78dd;
 }
 
 .tier-label {
@@ -335,12 +441,24 @@ body {
     background: #1a1a1a;
 }
 
-.smash-tier .tier-img {
-    border-color: rgba(184, 169, 220, 0.7);
+.tier-s .tier-img {
+    border-color: rgba(255, 107, 157, 0.7);
 }
 
-.pass-tier .tier-img {
-    border-color: rgba(108, 92, 231, 0.7);
+.tier-a .tier-img {
+    border-color: rgba(255, 152, 0, 0.7);
+}
+
+.tier-b .tier-img {
+    border-color: rgba(76, 175, 80, 0.7);
+}
+
+.tier-c .tier-img {
+    border-color: rgba(96, 125, 139, 0.7);
+}
+
+.tier-f .tier-img {
+    border-color: rgba(33, 150, 243, 0.7);
 }
 
 .tier-img:hover {
@@ -351,18 +469,6 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-.tier-img .img-number {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    font-size: 0.7rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: 600;
 }
 
 /* Animations des cartes */
@@ -413,12 +519,17 @@ body {
     font-size: 1.1rem;
 }
 
-.restart-btn {
+.game-over-buttons {
+    display: flex;
+    gap: 15px;
     margin-top: 30px;
+    justify-content: center;
+}
+
+.restart-btn, .export-btn {
     padding: 15px 30px;
     border: none;
     border-radius: 25px;
-    background: linear-gradient(135deg, #8b78dd, #6c5ce7);
     color: white;
     font-size: 1rem;
     font-weight: 600;
@@ -426,7 +537,15 @@ body {
     transition: transform 0.3s ease;
 }
 
-.restart-btn:hover {
+.restart-btn {
+    background: linear-gradient(135deg, #8b78dd, #6c5ce7);
+}
+
+.export-btn {
+    background: linear-gradient(135deg, #4caf50, #388e3c);
+}
+
+.restart-btn:hover, .export-btn:hover {
     transform: scale(1.05);
 }
 
