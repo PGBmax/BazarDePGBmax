@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Smash or Pass</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="shortcut icon" href="https://www.coupcritique.fr/images/types/icon/normal.png">
@@ -16,13 +16,21 @@
         <!-- En-tête avec scores et contrôles -->
         <header class="header">
             <div class="header-left">
-                <h1>Smash or Pass</h1>
+                <h1 class="logo">
+                    <span class="logo-smash">SMASH</span>
+                    <span class="logo-or">OR</span>
+                    <span class="logo-pass">PASS</span>
+                    <div class="logo-glow"></div>
+                </h1>
                 <div class="header-controls">
                     <button class="header-btn" id="reset-btn" title="Réinitialiser">
                         🔄 Reset
                     </button>
                     <button onclick="window.location.href='../index.html'" class="header-btn" id="hub-btn" title="Retour au hub">
                         🏠 Hub
+                    </button>
+                    <button class="header-btn" id="sound-toggle-btn" title="Activer/Désactiver les sons de clic">
+                        🔊 Son
                     </button>
                 </div>
             </div>
@@ -84,10 +92,6 @@
                         <span>🧊</span>
                         <span>Nope total</span>
                     </button>
-                </div>
-                
-                <div class="instructions">
-                    <span>Clavier : 1-2-3-4-5 | Swipe : ↑S ↓F</span>
                 </div>
             </section>
 
@@ -177,6 +181,26 @@
         <div class="notification hidden" id="notification">
             <span id="notification-text"></span>
         </div>
+
+        <!-- Welcome Popup -->
+        <div id="welcomePopup" class="popup-overlay hidden">
+            <div class="popup-content">
+                <h2>🎮 Bienvenue au Terroir des Gooneurs ! 🎮</h2>
+                <p>Classez tes champions RAID pour determiner le plus smashable !</p>
+                <div class="popup-tiers">
+                    <div class="tier-example s">❤️‍🔥 A Marier</div>
+                    <div class="tier-example a">😳 Je prétends réfléchir</div>
+                    <div class="tier-example b">🙂 Si y'a rien d'autre</div>
+                    <div class="tier-example c">😬 Même bourré j'hésite</div>
+                    <div class="tier-example f">🧊 Nope total</div>
+                </div>
+                <p>Clique sur les boutons pour classer chaque perso !</p>
+                <button class="popup-btn" onclick="game.closeWelcomePopup()">Commencer à Classer</button>
+            </div>
+        </div>
+
+        <!-- Dating-style notifications -->
+        <div id="dating-notifications" class="dating-notifications-container"></div>
     </div>
 
     <script src="script.js"></script>

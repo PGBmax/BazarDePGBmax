@@ -12,6 +12,9 @@ class TierListGame {
         };
         this.currentImagePath = null;
         
+        // Paramètres audio
+        this.clickSoundEnabled = true;
+        
         // Éléments DOM - Boutons
         this.tierButtons = {
             s: document.getElementById('tier-s-btn'),
@@ -71,6 +74,15 @@ class TierListGame {
         this.setupEventListeners();
         this.loadNextImage();
         this.updateDisplay();
+        
+        // Charger les préférences audio
+        this.loadSoundPreference();
+        
+        // Initialiser les notifications de rencontre
+        this.initDatingNotifications();
+        
+        // Afficher le popup de bienvenue si c'est la première fois
+        this.showWelcomePopupIfNeeded();
     }
     
     generateAllImages() {
@@ -104,9 +116,11 @@ class TierListGame {
         // Boutons header
         const resetBtn = document.getElementById('reset-btn');
         const hubBtn = document.getElementById('hub-btn');
+        const soundToggleBtn = document.getElementById('sound-toggle-btn');
         
         resetBtn?.addEventListener('click', () => this.confirmReset());
         hubBtn?.addEventListener('click', () => this.goToHub());
+        soundToggleBtn?.addEventListener('click', () => this.toggleClickSound());
         
         // Clavier (1-5 pour les tiers)
         document.addEventListener('keydown', (e) => {
@@ -152,6 +166,9 @@ class TierListGame {
     makeChoice(tier) {
         if (this.isAnimating || !this.currentImagePath || !this.tiers[tier]) return;
         
+        // Jouer le son de clic
+        this.playClickSound();
+        
         this.isAnimating = true;
         
         const imageNumber = this.getImageNumber(this.currentImagePath);
@@ -175,6 +192,14 @@ class TierListGame {
         
         // Sauvegarder
         this.saveToStorage();
+        
+        // Déclencher une notification de rencontre occasionnellement
+        if (Math.random() < 0.05) { // 5% de chance
+            const justClassifiedImage = this.currentImagePath; // Sauvegarder avant que ça change
+            setTimeout(() => {
+                this.createDatingNotification(justClassifiedImage, tier);
+            }, 1000);
+        }
         
         // Continuer
         setTimeout(() => {
@@ -635,11 +660,231 @@ class TierListGame {
             console.error('Erreur lors de la lecture du son:', error);
         }
     }
+    
+    playClickSound() {
+        // Si les sons de clic sont désactivés, ne rien faire
+        if (!this.clickSoundEnabled) return;
+        
+        try {
+            // Créer un élément audio pour le son de clic
+            const audio = new Audio();
+            
+            // Jouer le son "Click.mp3"
+            audio.src = 'Click.mp3';
+            
+            // Volume plus doux pour les clics répétés
+            	audio.volume = 0.01;
+            
+            // Jouer le son
+            audio.play().catch(error => {
+                console.log('Impossible de jouer le son de clic:', error);
+                // Les navigateurs bloquent souvent l'autoplay audio
+            });
+            
+        } catch (error) {
+            console.error('Erreur lors de la lecture du son de clic:', error);
+        }
+    }
+    
+    toggleClickSound() {
+        // Basculer l'état des sons de clic
+        this.clickSoundEnabled = !this.clickSoundEnabled;
+        
+        // Mettre à jour l'icône du bouton
+        this.updateSoundButtonIcon();
+        
+        // Sauvegarder la préférence dans localStorage
+        localStorage.setItem('clickSoundEnabled', this.clickSoundEnabled);
+        
+        // Notification
+        const message = this.clickSoundEnabled ? '🔊 Sons de clic activés' : '🔇 Sons de clic désactivés';
+        this.showNotification(message);
+    }
+    
+    updateSoundButtonIcon() {
+        const soundBtn = document.getElementById('sound-toggle-btn');
+        if (soundBtn) {
+            soundBtn.innerHTML = this.clickSoundEnabled ? '🔊 Son' : '🔇 Son';
+            soundBtn.title = this.clickSoundEnabled ? 
+                'Désactiver les sons de clic' : 
+                'Activer les sons de clic';
+        }
+    }
+    
+    loadSoundPreference() {
+        // Charger la préférence depuis localStorage
+        const saved = localStorage.getItem('clickSoundEnabled');
+        if (saved !== null) {
+            this.clickSoundEnabled = JSON.parse(saved);
+        }
+        // Mettre à jour l'icône du bouton
+        this.updateSoundButtonIcon();
+    }
+    
+    // Méthodes pour le popup de bienvenue
+    showWelcomePopupIfNeeded() {
+        // Vérifier si toutes les tiers sont vides
+        const hasAnyItems = Object.values(this.tiers).some(tierList => tierList.length > 0);
+        
+        console.log('🔍 Vérification popup:', {
+            tiers: this.tiers,
+            hasAnyItems: hasAnyItems,
+            shouldShowPopup: !hasAnyItems
+        });
+        
+        if (!hasAnyItems) {
+            console.log('📝 Affichage du popup de bienvenue');
+            const popup = document.getElementById('welcomePopup');
+            if (popup) {
+                popup.classList.remove('hidden');
+                console.log('✅ Popup affiché');
+            } else {
+                console.log('❌ Popup element non trouvé');
+            }
+        } else {
+            console.log('❌ Des items existent déjà, pas de popup');
+        }
+    }
+    
+    closeWelcomePopup() {
+        const popup = document.getElementById('welcomePopup');
+        if (popup) {
+            popup.classList.add('hidden');
+        }
+    }
+    
+    // Méthodes temporaires pour déboguer
+    clearStorageAndReload() {
+        localStorage.removeItem('tier-list-auto');
+        console.log('🗑️ localStorage vidé');
+        location.reload();
+    }
+    
+    forceShowPopup() {
+        console.log('🔧 Force affichage du popup');
+        const popup = document.getElementById('welcomePopup');
+        if (popup) {
+            popup.classList.remove('hidden');
+            console.log('✅ Popup forcé');
+        }
+    }
+    
+    // ===== NOTIFICATIONS STYLE SITE DE RENCONTRE =====
+    
+    initDatingNotifications() {
+        this.datingMessages = {
+            s: [
+                "💕 veut vous épouser immédiatement !",
+                "😍 dit que vous êtes son type idéal",
+                "💍 a déjà choisi la bague de fiançailles",
+                "🔥 vous trouve irrésistible",
+                "⭐ vous a mis dans ses favoris",
+                "💖 rêve de vous chaque nuit"
+            ],
+            a: [
+                "😳 vous a liké discrètement",
+                "🤔 hésite entre vous et son ex",
+                "📱 vous a stalké sur tous les réseaux",
+                "💭 pense à vous sous la douche",
+                "🙈 vous trouve mignon mais n'ose pas l'avouer",
+                "😏 vous ferait bien un café"
+            ],
+            b: [
+                "🤷 vous trouve 'pas mal'",
+                "☕ accepterait un rendez-vous café",
+                "📺 regarderait Netflix avec vous",
+                "🍕 partagerait une pizza",
+                "😐 dit 'pourquoi pas' sans conviction",
+                "🤝 vous voit comme un bon ami"
+            ],
+            c: [
+                "😬 vous a vu mais fait semblant de pas voir",
+                "🤨 se demande si c'est vraiment votre vraie photo",
+                "💸 accepterait seulement si vous payez",
+                "🍺 faudrait qu'il soit vraiment bourré",
+                "🙄 vous laisse en 'vu' depuis 3 jours",
+                "😴 s'endort en regardant votre profil"
+            ],
+            f: [
+                "🚫 vous a bloqué préventivement",
+                "🤢 a vomi en voyant votre photo",
+                "👻 vous a ghosté avant même de vous parler",
+                "🚪 a quitté l'app après vous avoir vu",
+                "❄️ vous trouve plus froid qu'un pingouin",
+                "💀 préfère rester célibataire à vie"
+            ]
+        };
+        
+        this.datingNotificationQueue = [];
+        this.isShowingDatingNotification = false;
+    }
+    
+    showRandomDatingNotification() {
+        // Seulement si on a des persos classés
+        const allClassified = Object.values(this.tiers).flat();
+        if (allClassified.length === 0) return;
+        
+        // Choisir un perso au hasard parmi ceux classés
+        const randomCharacter = allClassified[Math.floor(Math.random() * allClassified.length)];
+        const characterTier = this.getCharacterTier(randomCharacter.path);
+        
+        if (characterTier) {
+            this.createDatingNotification(randomCharacter.path, characterTier);
+        }
+    }
+    
+    getCharacterTier(imagePath) {
+        for (const [tier, characters] of Object.entries(this.tiers)) {
+            if (characters.some(char => char.path === imagePath)) {
+                return tier;
+            }
+        }
+        return null;
+    }
+    
+    createDatingNotification(imagePath, tier) {
+        const messages = this.datingMessages[tier];
+        const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+        
+        const notification = document.createElement('div');
+        notification.className = `dating-notification tier-${tier}`;
+        notification.innerHTML = `
+            <div class="dating-notification-avatar">
+                <img src="${imagePath}" alt="Perso" onerror="this.style.display='none'">
+            </div>
+            <div class="dating-notification-content">
+                <div class="dating-notification-message">${randomMessage}</div>
+            </div>
+            <div class="dating-notification-close" onclick="this.parentElement.remove()">×</div>
+        `;
+        
+        const container = document.getElementById('dating-notifications');
+        container.appendChild(notification);
+        
+        // Auto-suppression après 6 secondes
+        setTimeout(() => {
+            if (notification.parentElement) {
+                notification.classList.add('removing');
+                setTimeout(() => {
+                    notification.remove();
+                }, 400);
+            }
+        }, 6000);
+        
+        // Limiter à 3 notifications max
+        const notifications = container.children;
+        if (notifications.length > 3) {
+            notifications[0].remove();
+        }
+    }
 }
+
+// Variable globale pour le jeu
+let game;
 
 // Initialiser le jeu
 document.addEventListener('DOMContentLoaded', () => {
-    new TierListGame();
+    game = new TierListGame();
 });
 
 // Empêcher le scroll sur mobile
