@@ -195,7 +195,7 @@ function addDragEvents(img) {
 }
 
 function loadInitialImages() {
-  const total = 26;
+  const total = 30;
   for (let i = 1; i <= total; i++) {
     const img = document.createElement("img");
 	if (i < 10)
