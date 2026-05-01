@@ -1,0 +1,453 @@
+/* ================================================
+   RSL Tier List — Shared Styles (override layer)
+   Linked AFTER the local style.css in each page
+   ================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+/* ---------- Base ---------- */
+body {
+  font-family: 'Inter', Arial, sans-serif;
+  background: #0f0f13;
+  color: #e8e6f0;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+h1, h2 {
+  text-align: center;
+  font-family: 'Inter', Arial, sans-serif;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+
+h1 {
+  font-size: 1.8rem;
+  color: #e8e6f0;
+  padding: 1rem 0 0.5rem;
+}
+
+h2 {
+  font-size: 1rem;
+  color: rgba(232, 230, 240, 0.5);
+  margin-top: 1rem;
+}
+
+/* ---------- Top bar ---------- */
+.top-bar {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 14px 20px;
+  background: rgba(15, 15, 20, 0.98);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-wrap: wrap;
+  margin-bottom: 0;
+}
+
+/* ---------- Buttons ---------- */
+button {
+  background: rgba(139, 120, 221, 0.15);
+  color: #b8a9dc;
+  border: 1px solid rgba(139, 120, 221, 0.3);
+  padding: 8px 16px;
+  margin: 0;
+  cursor: pointer;
+  border-radius: 8px;
+  font-family: 'Inter', Arial, sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+button:hover {
+  background: rgba(139, 120, 221, 0.3);
+  border-color: rgba(139, 120, 221, 0.6);
+  color: #e8e6f0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(139, 120, 221, 0.25);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* ---------- Tier list ---------- */
+#tier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 1100px;
+  margin: 1rem auto;
+  padding: 0 1rem;
+}
+
+.tier {
+  display: flex;
+  align-items: stretch;
+  background: #1a1a24;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  min-height: 84px;
+  height: auto;
+  overflow: visible;
+  position: relative;
+  border-radius: 12px;
+  transition: border-color 0.2s ease;
+}
+
+.tier:hover {
+  border-color: rgba(139, 120, 221, 0.3);
+}
+
+/* ---------- Rank label ---------- */
+.rank-label-wrapper {
+  position: relative;
+  width: 100px;
+  min-height: 84px;
+  height: 100%;
+  flex-shrink: 0;
+  display: flex;
+}
+
+.rank-label {
+  width: 100%;
+  min-height: 84px;
+  height: 100%;
+  font-weight: 700;
+  font-size: 1.2em;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 11px 0 0 11px;
+  box-sizing: border-box;
+  font-family: 'Inter', Arial, sans-serif;
+  transition: filter 0.15s ease;
+}
+
+.rank-label:hover {
+  filter: brightness(1.1);
+}
+
+/* ---------- Tier content ---------- */
+.tier-content {
+  display: flex;
+  align-items: center;
+  min-height: 84px;
+  padding: 8px 44px 8px 10px;
+  gap: 8px;
+  flex: 1;
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+.tier-content img,
+#unranked-container img {
+  height: 64px;
+  width: auto;
+  cursor: move;
+  border-radius: 6px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tier-content img:hover,
+#unranked-container img:hover {
+  transform: scale(1.12);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+}
+
+img.dragging {
+  opacity: 0.4;
+  transform: scale(0.95);
+}
+
+/* ---------- Settings button ---------- */
+.settings-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(232, 230, 240, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0;
+  cursor: pointer;
+  font-size: 15px;
+  border-radius: 50%;
+  z-index: 2;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.settings-btn:hover {
+  background: rgba(139, 120, 221, 0.3);
+  color: #e8e6f0;
+  border-color: rgba(139, 120, 221, 0.5);
+  transform: translateY(-50%) rotate(45deg);
+  box-shadow: none;
+}
+
+/* ---------- Unranked container ---------- */
+#unranked-container {
+  background: #1a1a24;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  padding: 14px;
+  min-height: 110px;
+  max-width: 1100px;
+  margin: 6px auto 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  border-radius: 12px;
+  height: auto;
+  transition: height 0.3s;
+}
+
+/* ---------- Remove button ---------- */
+.tier .remove-btn {
+  position: absolute;
+  right: 5px;
+  top: 5px;
+  background: rgba(200, 0, 0, 0.8);
+  color: #fff;
+  border: none;
+  padding: 2px 7px;
+  cursor: pointer;
+  font-size: 11px;
+  border-radius: 5px;
+}
+
+.tier .remove-btn:hover {
+  background: #e00;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---------- Settings menu ---------- */
+.settings-menu {
+  position: absolute;
+  right: 10px;
+  top: 44px;
+  background: #1a1a24;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 12px;
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 10;
+  min-width: 160px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.settings-menu .delete-col-btn {
+  background: rgba(200, 0, 0, 0.8);
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.settings-menu .delete-col-btn:hover {
+  background: #e00;
+  transform: none;
+  box-shadow: none;
+}
+
+.settings-menu input[type="color"] {
+  width: 40px;
+  height: 40px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+  border-radius: 6px;
+}
+
+/* ---------- Modal ---------- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  position: relative;
+  background: #1a1a24;
+  border: 1px solid rgba(139, 120, 221, 0.3);
+  border-radius: 16px;
+  padding: 28px 36px;
+  box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 280px;
+  align-items: center;
+}
+
+.modal-content button {
+  background: rgba(200, 0, 0, 0.75);
+  color: #fff;
+  border: 1px solid rgba(200, 0, 0, 0.5);
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.modal-content button:hover {
+  background: #e00;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(220, 0, 0, 0.4);
+}
+
+.modal-btn-blue {
+  background: rgba(41, 128, 239, 0.8) !important;
+  border-color: rgba(41, 128, 239, 0.5) !important;
+  color: #fff !important;
+}
+
+.modal-btn-blue:hover {
+  background: #2980ef !important;
+  box-shadow: 0 4px 12px rgba(41, 128, 239, 0.4) !important;
+}
+
+.modal-content .delete-col-btn {
+  background: rgba(200, 0, 0, 0.75);
+  border: 1px solid rgba(200, 0, 0, 0.5);
+  color: #fff;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.95rem;
+}
+
+.modal-content .delete-col-btn:hover {
+  background: #e00;
+  transform: none;
+  box-shadow: 0 4px 12px rgba(220, 0, 0, 0.4);
+}
+
+.modal-content input[type="color"] {
+  width: 48px;
+  height: 48px;
+  border: none;
+  cursor: pointer;
+  background: none;
+  border-radius: 8px;
+}
+
+.modal-row {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* ---------- Drag placeholder ---------- */
+.drag-placeholder {
+  width: 64px;
+  height: 64px;
+  border: 2px dashed rgba(139, 120, 221, 0.4);
+  border-radius: 6px;
+  background: rgba(139, 120, 221, 0.05);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .top-bar {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .rank-label-wrapper {
+    width: 65px;
+  }
+
+  .rank-label {
+    font-size: 1em;
+    min-height: 72px;
+  }
+
+  .tier {
+    min-height: 72px;
+  }
+
+  .tier-content img,
+  #unranked-container img {
+    height: 52px;
+  }
+
+  #tier-list {
+    padding: 0 0.5rem;
+  }
+
+  #unranked-container {
+    margin: 6px 0.5rem 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-bar {
+    padding: 8px 10px;
+    gap: 6px;
+  }
+
+  button {
+    padding: 5px 10px;
+    font-size: 0.75rem;
+  }
+
+  h1 {
+    font-size: 1.3rem;
+  }
+
+  .rank-label-wrapper {
+    width: 50px;
+  }
+
+  .rank-label {
+    font-size: 0.85em;
+    border-radius: 10px 0 0 10px;
+  }
+
+  .tier-content {
+    padding: 6px 36px 6px 8px;
+    gap: 6px;
+  }
+
+  .tier-content img,
+  #unranked-container img {
+    height: 44px;
+  }
+
+  .settings-btn {
+    width: 24px;
+    height: 24px;
+    font-size: 12px;
+  }
+
+  #tier-list {
+    padding: 0 0.25rem;
+  }
+}
