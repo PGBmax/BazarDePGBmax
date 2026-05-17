@@ -61,6 +61,9 @@ class TierListGame {
         // État pour les animations
         this.isAnimating = false;
         
+        // Undo stack
+        this.undoStack = [];
+        
         this.init();
     }
     
@@ -122,8 +125,17 @@ class TierListGame {
         hubBtn?.addEventListener('click', () => this.goToHub());
         soundToggleBtn?.addEventListener('click', () => this.toggleClickSound());
         
-        // Clavier (1-5 pour les tiers)
+        // Clavier (1-5 pour les tiers, Ctrl+Z pour annuler)
         document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT') return;
+            
+            // Undo
+            if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+                e.preventDefault();
+                this.undo();
+                return;
+            }
+            
             if (this.isAnimating) return;
             
             const keyToTier = {
@@ -163,8 +175,42 @@ class TierListGame {
         });
     }
     
+    // ── Undo ──────────────────────────────────────────────
+    pushUndo() {
+        this.undoStack.push({
+            processedImages: new Set(this.processedImages),
+            tiers: JSON.parse(JSON.stringify(this.tiers)),
+            allImages: [...this.allImages],
+            currentImagePath: this.currentImagePath
+        });
+        if (this.undoStack.length > 30) this.undoStack.shift();
+    }
+
+    undo() {
+        if (this.undoStack.length === 0) {
+            this.showNotification('↩ Rien à annuler');
+            return;
+        }
+        const prev = this.undoStack.pop();
+        this.processedImages = prev.processedImages;
+        this.tiers = prev.tiers;
+        this.allImages = prev.allImages;
+        this.currentImagePath = prev.currentImagePath;
+        if (this.currentImagePath && this.cardImage) {
+            this.cardImage.src = this.currentImagePath;
+        }
+        this.isAnimating = false;
+        this.saveToStorage();
+        this.updateDisplay();
+        this.updateTierLists();
+        this.showNotification('↩ Vote annulé');
+    }
+
     makeChoice(tier) {
         if (this.isAnimating || !this.currentImagePath || !this.tiers[tier]) return;
+        
+        // Sauvegarder l'état pour undo
+        this.pushUndo();
         
         // Jouer le son de clic
         this.playClickSound();
@@ -247,7 +293,13 @@ class TierListGame {
         if (this.cardCounter) {
             const processed = this.processedImages.size;
             const total = this.allImages.length;
-            this.cardCounter.textContent = `${processed + 1} / ${total}`;
+            const remaining = total - processed;
+            this.cardCounter.textContent = `${processed} / ${total}`;
+            // Update progress bar if present
+            const fill = document.getElementById('sop-progress-fill');
+            const pctEl = document.getElementById('sop-progress-pct');
+            if (fill) fill.style.width = (total > 0 ? Math.round((processed / total) * 100) : 0) + '%';
+            if (pctEl) pctEl.textContent = (total > 0 ? Math.round((processed / total) * 100) : 0) + '%';
         }
     }
     
@@ -885,6 +937,7 @@ let game;
 // Initialiser le jeu
 document.addEventListener('DOMContentLoaded', () => {
     game = new TierListGame();
+    window._sopGame = game;
 });
 
 // Empêcher le scroll sur mobile

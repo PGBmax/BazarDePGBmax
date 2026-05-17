@@ -3,180 +3,306 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hub — RSL Tier Lists</title>
+  <title>Hub — RSL Tier Lists · PGBMAX</title>
   <link rel="shortcut icon" href="https://www.coupcritique.fr/images/types/icon/normal.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    *, *::before, *::after {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+    :root {
+      --primary:        #e8790e;
+      --primary-dark:   #c06010;
+      --primary-glow:   rgba(232, 121, 14, 0.18);
+      --background:     #090807;
+      --background-alt: #0f0d0a;
+      --glass-bg:       rgba(20, 14, 8, 0.88);
+      --glass-border:   rgba(180, 100, 30, 0.18);
+      --text-light:     #ede4d4;
+      --text-muted:     #8a7a68;
+      --card-shadow:    0 4px 16px rgba(0, 0, 0, 0.5);
     }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Inter', sans-serif;
-      background: #0f0f13;
-      color: #e8e6f0;
+      background: var(--background);
+      color: var(--text-light);
       min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
     }
 
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--background); }
+    ::-webkit-scrollbar-thumb { background: var(--primary); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary-dark); }
+
+    /* ── Header ── */
     header {
-      background: rgba(15, 15, 20, 0.98);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 32px 40px;
-      text-align: center;
+      position: sticky;
+      top: 0;
+      background: rgba(9, 8, 7, 0.96);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 2.5rem;
+      z-index: 100;
+      gap: 1rem;
+      flex-wrap: wrap;
     }
 
-    h1 {
-      font-size: 2.4rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #7b8cde 0%, #a78bfa 50%, #60a5fa 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 1px;
-      margin-bottom: 6px;
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
     }
 
-    .subtitle {
-      color: rgba(232, 230, 240, 0.4);
-      font-size: 0.8rem;
+    .logo-section h1 {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--primary);
+      letter-spacing: 2px;
+      text-align: left;
+      padding: 0;
+    }
+
+    .logo-section .logo-sep { color: var(--text-muted); font-size: 0.9rem; }
+
+    .logo-section .logo-sub {
+      color: var(--text-muted);
+      font-size: 0.75rem;
       font-weight: 500;
-      letter-spacing: 3px;
+      letter-spacing: 1px;
       text-transform: uppercase;
     }
 
-    main {
-      padding: 48px 32px 64px;
-      max-width: 980px;
-      margin: 0 auto;
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
     }
 
-    .section-label {
+    .nav-pill {
+      padding: 0.4rem 0.9rem;
+      background: transparent;
+      border: 1px solid var(--glass-border);
+      border-radius: 2px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-pill:hover { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+    .nav-pill-ext { color: var(--primary); border-color: rgba(232, 121, 14, 0.3); }
+    .nav-pill-ext:hover { background: var(--primary); color: #fff; }
+
+    /* ── Hero ── */
+    .hero {
       text-align: center;
+      padding: 3.5rem 2rem 2.5rem;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .hero-tag {
       font-size: 0.72rem;
       font-weight: 600;
       letter-spacing: 3px;
       text-transform: uppercase;
-      color: rgba(167, 139, 250, 0.6);
-      margin-bottom: 28px;
+      color: var(--primary);
+      margin-bottom: 0.8rem;
     }
 
+    .hero h2 {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      font-weight: 700;
+      color: var(--text-light);
+      letter-spacing: 2px;
+      margin-bottom: 0.8rem;
+    }
+
+    .hero p {
+      font-size: 1rem;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin: 0 auto;
+      font-weight: 300;
+    }
+
+    /* ── Main ── */
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 3rem 2rem 5rem;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .section-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-light);
+      letter-spacing: 1px;
+    }
+
+    .section-title::before { content: '▌ '; color: var(--primary); }
+
+    .section-sub {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ── Grid ── */
     .site-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
-      gap: 18px;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 1.2rem;
     }
 
     .site-card {
-      background: #16161f;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 16px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 2px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 26px 16px 20px;
+      padding: 1.8rem 1rem 1.5rem;
       text-decoration: none;
-      color: #e8e6f0;
-      transition: background 0.25s ease, border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+      color: var(--text-light);
+      box-shadow: var(--card-shadow);
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
       text-align: center;
-      cursor: pointer;
     }
 
     .site-card:hover {
-      background: #1e1e2e;
-      border-color: rgba(167, 139, 250, 0.45);
-      transform: translateY(-5px);
-      box-shadow: 0 12px 36px rgba(100, 80, 200, 0.22);
+      transform: translateY(-4px);
+      border-color: var(--primary);
+      box-shadow: 0 8px 24px rgba(232, 121, 14, 0.15);
     }
 
     .site-card img {
-      width: 80px;
-      height: 80px;
+      width: 76px;
+      height: 76px;
       object-fit: cover;
-      border-radius: 12px;
-      margin-bottom: 14px;
-      transition: transform 0.25s ease;
+      border-radius: 2px;
+      margin-bottom: 1rem;
+      transition: transform 0.2s ease;
     }
 
-    .site-card:hover img {
-      transform: scale(1.08);
-    }
+    .site-card:hover img { transform: scale(1.06); }
 
     .site-card span {
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       font-weight: 600;
+      color: var(--text-light);
       letter-spacing: 0.3px;
-      color: rgba(232, 230, 240, 0.9);
     }
 
     .site-card.special {
-      border-color: rgba(255, 107, 157, 0.18);
+      border-color: rgba(232, 121, 14, 0.25);
     }
 
-    .site-card.special:hover {
-      border-color: rgba(255, 107, 157, 0.5);
-      box-shadow: 0 12px 36px rgba(255, 80, 100, 0.2);
+    /* ── Footer ── */
+    footer {
+      background: var(--glass-bg);
+      border-top: 1px solid var(--glass-border);
+      padding: 2.5rem 2rem 1.5rem;
+      text-align: center;
+      margin-top: 4rem;
     }
 
-    @media (max-width: 600px) {
-      header {
-        padding: 22px 20px;
-      }
+    .footer-content { max-width: 900px; margin: 0 auto; }
 
-      h1 {
-        font-size: 1.7rem;
-      }
-
-      main {
-        padding: 28px 14px 48px;
-      }
-
-      .site-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
-
-      .site-card {
-        padding: 18px 10px 14px;
-        border-radius: 12px;
-      }
-
-      .site-card img {
-        width: 64px;
-        height: 64px;
-        margin-bottom: 10px;
-        border-radius: 10px;
-      }
-
-      .site-card span {
-        font-size: 0.8rem;
-      }
+    .footer-sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2rem;
+      margin-bottom: 1.8rem;
     }
 
-    @media (max-width: 360px) {
-      .site-grid {
-        gap: 10px;
-      }
+    .footer-section h4 {
+      font-family: 'Space Mono', monospace;
+      color: var(--primary);
+      font-size: 0.78rem;
+      font-weight: 700;
+      margin-bottom: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
 
-      .site-card img {
-        width: 56px;
-        height: 56px;
-      }
+    .footer-links { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.2s ease;
+    }
+
+    .footer-links a:hover { color: var(--primary); }
+
+    .footer-bottom {
+      border-top: 1px solid var(--glass-border);
+      padding-top: 1.2rem;
+      margin-top: 1.5rem;
+    }
+
+    .footer-bottom small { opacity: 0.5; font-size: 0.78rem; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      header { padding: 0.8rem 1.2rem; flex-direction: column; gap: 0.8rem; }
+      .hero { padding: 2.5rem 1.2rem 2rem; }
+      main { padding: 2rem 1.2rem 4rem; }
+    }
+
+    @media (max-width: 480px) {
+      .site-grid { grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
+      .site-card { padding: 1.3rem 0.8rem 1.1rem; }
+      .site-card img { width: 60px; height: 60px; }
+      .footer-sections { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
     }
   </style>
 </head>
 <body>
   <header>
-    <h1>Tier List Maker for RSL</h1>
-    <p class="subtitle">Raid: Shadow Legends</p>
+    <div class="logo-section">
+      <h1>PGBMAX</h1>
+      <span class="logo-sep">·</span>
+      <span class="logo-sub">Tier Lists RSL</span>
+    </div>
+    <nav class="header-nav">
+      <a href="https://fr-rsl.github.io" target="_blank" rel="noopener" class="nav-pill nav-pill-ext">Guide FR RSL ↗</a>
+      <a href="https://fr-rsl.github.io/pages/search/index.html" target="_blank" rel="noopener" class="nav-pill">Recherche Champions</a>
+    </nav>
   </header>
 
+  <section class="hero">
+    <p class="hero-tag">⚔️ Raid: Shadow Legends</p>
+    <h2>Tier List Maker</h2>
+    <p>Classe tes champions, reliques et joyaux — sauvegarde et exporte ton classement.</p>
+  </section>
+
   <main>
-    <p class="section-label">Choisir une catégorie</p>
+    <div class="section-header">
+      <p class="section-title">Catégories disponibles</p>
+      <p class="section-sub">Sélectionne une catégorie pour commencer ta tier list</p>
+    </div>
     <div class="site-grid">
       <a href="Reliques/" class="site-card">
         <img src="Reliques/images/36.png" alt="Reliques">
@@ -216,5 +342,33 @@
       </a>
     </div>
   </main>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-sections">
+        <div class="footer-section">
+          <h4>Tier Lists</h4>
+          <div class="footer-links">
+            <a href="Reliques/">Reliques</a>
+            <a href="Mythiques/">Mythiques</a>
+            <a href="Joyaux/">Joyaux</a>
+            <a href="SmashOrPass/">Smash Or Pass</a>
+          </div>
+        </div>
+        <div class="footer-section">
+          <h4>Guide FR RSL</h4>
+          <div class="footer-links">
+            <a href="https://fr-rsl.github.io" target="_blank" rel="noopener">Accueil</a>
+            <a href="https://fr-rsl.github.io/pages/search/index.html" target="_blank" rel="noopener">Recherche Champions</a>
+            <a href="https://fr-rsl.github.io/#factions" target="_blank" rel="noopener">Factions</a>
+            <a href="https://fr-rsl.github.io/#equipement" target="_blank" rel="noopener">Équipement</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <small>Site de fans non-officiel · Non affilié à Plarium Games · Raid: Shadow Legends est une marque déposée de Plarium Games Ltd.</small>
+      </div>
+    </div>
+  </footer>
 </body>
 </html>

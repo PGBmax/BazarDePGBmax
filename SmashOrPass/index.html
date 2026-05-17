@@ -8,10 +8,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="shortcut icon" href="https://www.coupcritique.fr/images/types/icon/normal.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+    <nav style="position:sticky;top:0;z-index:200;background:rgba(9,8,7,0.96);backdrop-filter:blur(12px);border-bottom:1px solid rgba(180,100,30,0.18);display:flex;align-items:center;justify-content:space-between;padding:0.6rem 1.8rem;gap:1rem;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:0.5rem;">
+        <a href="../index.html" style="font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;color:#e8790e;letter-spacing:2px;text-decoration:none;">PGBMAX</a>
+        <span style="color:#8a7a68;font-size:0.9rem;">·</span>
+        <span style="color:#8a7a68;font-size:0.75rem;font-weight:500;letter-spacing:1px;text-transform:uppercase;">Tier Lists RSL</span>
+      </div>
+      <div style="display:flex;gap:0.4rem;flex-wrap:wrap;">
+        <a href="../index.html" style="padding:0.35rem 0.8rem;background:transparent;border:1px solid rgba(180,100,30,0.18);border-radius:2px;color:#8a7a68;text-decoration:none;font-size:0.8rem;font-weight:500;transition:all 0.2s;" onmouseover="this.style.background='#e8790e';this.style.borderColor='#e8790e';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.borderColor='rgba(180,100,30,0.18)';this.style.color='#8a7a68'">🏠 Hub</a>
+        <a href="https://fr-rsl.github.io" target="_blank" rel="noopener" style="padding:0.35rem 0.8rem;background:transparent;border:1px solid rgba(232,121,14,0.3);border-radius:2px;color:#e8790e;text-decoration:none;font-size:0.8rem;font-weight:500;transition:all 0.2s;" onmouseover="this.style.background='#e8790e';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#e8790e'">Guide FR RSL ↗</a>
+      </div>
+    </nav>
     <div class="app">
         <!-- En-tête avec scores et contrôles -->
         <header class="header">
@@ -26,11 +37,11 @@
                     <button class="header-btn" id="reset-btn" title="Réinitialiser">
                         🔄 Reset
                     </button>
-                    <button onclick="window.location.href='../index.html'" class="header-btn" id="hub-btn" title="Retour au hub">
-                        🏠 Hub
-                    </button>
                     <button class="header-btn" id="sound-toggle-btn" title="Activer/Désactiver les sons de clic">
                         🔊 Son
+                    </button>
+                    <button class="header-btn" id="undo-btn" title="Annuler le dernier vote (Ctrl+Z)" onclick="window._sopGame && window._sopGame.undo()">
+                        ↩ Annuler
                     </button>
                 </div>
             </div>
@@ -63,6 +74,14 @@
             <!-- Colonne gauche: Jeu -->
             <section class="game-area">
                 <div class="card-zone">
+                    <!-- Progress bar -->
+                    <div class="sop-progress-bar-track">
+                        <div class="sop-progress-bar-fill" id="sop-progress-fill" style="width:0%"></div>
+                    </div>
+                    <div class="sop-progress-info">
+                        <span id="card-counter">0 / 237</span>
+                        <span id="sop-progress-pct">0%</span>
+                    </div>
                     <div class="card" id="current-card">
                         <img id="card-image" src="" alt="">
                         <div class="card-info">
@@ -73,22 +92,27 @@
                 
                 <div class="controls">
                     <button class="btn btn-tier-s" id="tier-s-btn" data-tier="s">
+                        <span class="sop-key-hint">1</span>
                         <span>❤️‍🔥</span>
                         <span>A Marier</span>
                     </button>
                     <button class="btn btn-tier-a" id="tier-a-btn" data-tier="a">
+                        <span class="sop-key-hint">2</span>
                         <span>😳</span>
                         <span>Je prétends réfléchir</span>
                     </button>
                     <button class="btn btn-tier-b" id="tier-b-btn" data-tier="b">
+                        <span class="sop-key-hint">3</span>
                         <span>🙂</span>
                         <span>Si y'a rien d'autre</span>
                     </button>
                     <button class="btn btn-tier-c" id="tier-c-btn" data-tier="c">
+                        <span class="sop-key-hint">4</span>
                         <span>😬</span>
                         <span>Même bourré j'hésite</span>
                     </button>
                     <button class="btn btn-tier-f" id="tier-f-btn" data-tier="f">
+                        <span class="sop-key-hint">5</span>
                         <span>🧊</span>
                         <span>Nope total</span>
                     </button>

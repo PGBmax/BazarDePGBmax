@@ -7,17 +7,20 @@
 
 body {
     font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #1a1a1a 0%, #2a1a2a 50%, #0a0a0a 100%);
-    color: #e8e6f0;
+    background: #090807;
+    color: #ede4d4;
     height: 100vh;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 /* App container */
 .app {
-    height: 100vh;
+    flex: 1;
     display: flex;
     flex-direction: column;
+    overflow: hidden;
 }
 
 /* Header */
@@ -26,8 +29,8 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
-    background: rgba(15, 15, 15, 0.95);
-    border-bottom: 1px solid rgba(95, 75, 139, 0.4);
+    background: rgba(9, 8, 7, 0.96);
+    border-bottom: 1px solid rgba(180, 100, 30, 0.25);
 }
 
 .header-left {
@@ -143,21 +146,22 @@ body {
 
 .header-btn {
     padding: 8px 15px;
-    border: none;
-    border-radius: 8px;
-    background: rgba(139, 120, 221, 0.2);
-    color: #b8a9dc;
+    border: 1px solid rgba(180, 100, 30, 0.25);
+    border-radius: 2px;
+    background: transparent;
+    color: #8a7a68;
     font-size: 0.9rem;
     font-weight: 500;
     cursor: pointer;
-    transition: all 0.3s ease;
-    border: 1px solid rgba(139, 120, 221, 0.3);
+    transition: all 0.2s ease;
 }
 
 .header-btn:hover {
-    background: rgba(139, 120, 221, 0.3);
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(139, 120, 221, 0.2);
+    background: #e8790e;
+    border-color: #e8790e;
+    color: #fff;
+    transform: none;
+    box-shadow: none;
 }
 
 .header-btn:active {
@@ -221,7 +225,7 @@ body {
 .main-content {
     display: flex;
     flex: 1;
-    height: calc(100vh - 80px);
+    overflow: hidden;
 }
 
 /* Colonne gauche: Jeu (60%) */
@@ -232,8 +236,8 @@ body {
     justify-content: center;
     align-items: center;
     padding: 40px;
-    background: rgba(15, 15, 15, 0.5);
-    border-right: 2px solid rgba(95, 75, 139, 0.5);
+    background: rgba(9, 8, 7, 0.5);
+    border-right: 1px solid rgba(180, 100, 30, 0.2);
 }
 
 .card-zone {
@@ -246,10 +250,10 @@ body {
 .card {
     width: 100%;
     height: 100%;
-    border-radius: 20px;
+    border-radius: 4px;
     overflow: hidden;
-    background: #1a1a1a;
-    border: 2px solid rgba(139, 120, 221, 0.6);
+    background: rgba(20, 14, 8, 0.88);
+    border: 1px solid rgba(232, 121, 14, 0.35);
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
     cursor: grab;
     transition: transform 0.3s ease;
@@ -281,7 +285,7 @@ body {
 .card-counter {
     font-size: 1.1rem;
     font-weight: 600;
-    color: #b8a9dc;
+    color: #e8790e;
 }
 
 /* Boutons de contrôle */
@@ -404,7 +408,7 @@ body {
 /* Colonne droite: Tier List (40%) */
 .tier-list {
     flex: 0 0 40%;
-    background: rgba(10, 10, 10, 0.9);
+    background: rgba(9, 8, 7, 0.9);
     padding: 30px 20px;
     overflow-y: auto;
 }
@@ -413,16 +417,18 @@ body {
     text-align: center;
     margin-bottom: 30px;
     font-size: 1.5rem;
-    color: #b8a9dc;
+    font-family: 'Space Mono', monospace;
+    color: #ede4d4;
+    letter-spacing: 1px;
 }
 
 /* Sections de tier */
 .tier {
     margin-bottom: 30px;
-    border-radius: 12px;
+    border-radius: 2px;
     overflow: hidden;
-    border: 2px solid rgba(139, 120, 221, 0.4);
-    background: rgba(20, 20, 20, 0.6);
+    border: 1px solid rgba(180, 100, 30, 0.2);
+    background: rgba(20, 14, 8, 0.6);
 }
 
 /* Tier S */
@@ -523,13 +529,13 @@ body {
 .tier-img {
     width: 80px;
     height: 80px;
-    border-radius: 8px;
+    border-radius: 2px;
     overflow: hidden;
-    border: 2px solid rgba(139, 120, 221, 0.5);
+    border: 1px solid rgba(180, 100, 30, 0.3);
     transition: transform 0.3s ease;
     cursor: pointer;
     position: relative;
-    background: #1a1a1a;
+    background: rgba(20, 14, 8, 0.88);
 }
 
 .tier-s .tier-img {
@@ -592,17 +598,18 @@ body {
 }
 
 .game-over-content {
-    background: rgba(20, 20, 20, 0.95);
+    background: rgba(15, 13, 10, 0.98);
     padding: 40px;
-    border-radius: 20px;
+    border-radius: 2px;
     text-align: center;
-    border: 2px solid rgba(139, 120, 221, 0.6);
+    border: 1px solid rgba(232, 121, 14, 0.4);
 }
 
 .game-over-content h2 {
     margin-bottom: 30px;
     font-size: 2rem;
-    color: #b8a9dc;
+    font-family: 'Space Mono', monospace;
+    color: #e8790e;
 }
 
 .final-stats p {
@@ -629,7 +636,7 @@ body {
 }
 
 .restart-btn {
-    background: linear-gradient(135deg, #8b78dd, #6c5ce7);
+    background: #e8790e;
 }
 
 .export-btn {
@@ -659,13 +666,13 @@ body {
 }
 
 .feedback.smash {
-    color: #b8a9dc;
-    text-shadow: 0 0 20px rgba(184, 169, 220, 0.6);
+    color: #e8790e;
+    text-shadow: 0 0 20px rgba(232, 121, 14, 0.6);
 }
 
 .feedback.pass {
-    color: #8b78dd;
-    text-shadow: 0 0 20px rgba(139, 120, 221, 0.6);
+    color: #8a7a68;
+    text-shadow: 0 0 20px rgba(138, 122, 104, 0.6);
 }
 
 /* Responsive */
@@ -748,7 +755,7 @@ body {
     position: fixed;
     top: 20px;
     right: 20px;
-    background: linear-gradient(135deg, #8A4FFF, #6B1FB3);
+    background: #e8790e;
     color: white;
     padding: 12px 20px;
     border-radius: 8px;
@@ -782,24 +789,22 @@ body {
 }
 
 .completion-popup {
-    background: linear-gradient(135deg, #2a1a2a 0%, #1a1a1a 100%);
-    border: 2px solid #8b78dd;
-    border-radius: 20px;
+    background: rgba(15, 13, 10, 0.98);
+    border: 1px solid rgba(232, 121, 14, 0.4);
+    border-radius: 2px;
     padding: 40px;
     text-align: center;
     max-width: 500px;
     width: 90%;
-    box-shadow: 0 10px 30px rgba(139, 120, 221, 0.3);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     animation: popupBounce 0.5s ease;
 }
 
 .completion-popup-content h2 {
     font-size: 2.5rem;
     margin-bottom: 20px;
-    background: linear-gradient(135deg, #8b78dd, #b8a9dc);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    font-family: 'Space Mono', monospace;
+    color: #e8790e;
 }
 
 .completion-popup-content p {
@@ -813,8 +818,8 @@ body {
     justify-content: space-around;
     margin: 30px 0;
     padding: 20px;
-    background: rgba(139, 120, 221, 0.1);
-    border-radius: 10px;
+    background: rgba(232, 121, 14, 0.08);
+    border-radius: 2px;
 }
 
 .completion-stats div {
@@ -824,27 +829,28 @@ body {
 
 .completion-credit {
     font-style: italic;
-    color: #8b78dd;
+    color: #e8790e;
     font-size: 1.1rem !important;
     margin-top: 20px;
 }
 
 .completion-close-btn {
-    background: linear-gradient(135deg, #8b78dd, #6b5bb3);
+    background: #e8790e;
     color: white;
     border: none;
     padding: 15px 30px;
-    border-radius: 10px;
+    border-radius: 2px;
     font-size: 1.1rem;
     font-weight: bold;
     cursor: pointer;
     margin-top: 20px;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: background 0.2s ease;
 }
 
 .completion-close-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(139, 120, 221, 0.4);
+    background: #c06010;
+    transform: none;
+    box-shadow: none;
 }
 
 @keyframes fadeIn {
@@ -1324,4 +1330,70 @@ body {
     .dating-notification-message {
         font-size: 0.8rem;
     }
+}
+
+/* ══════════════════════════════════════════════════
+   SmashOrPass UX Enhancements
+   ══════════════════════════════════════════════════ */
+
+/* Progress bar above card */
+.sop-progress-bar-track {
+  width: 100%;
+  height: 4px;
+  background: rgba(180, 100, 30, 0.15);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.sop-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c06010, #e8790e);
+  border-radius: 2px;
+  transition: width 0.35s ease;
+}
+
+.sop-progress-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #8a7a68;
+  margin-bottom: 8px;
+  font-family: 'Space Mono', monospace;
+}
+
+#sop-progress-pct {
+  font-weight: 700;
+  color: #e8790e;
+}
+
+/* Keyboard shortcut hint on buttons */
+.btn {
+  position: relative;
+}
+
+.sop-key-hint {
+  position: absolute !important;
+  top: 4px;
+  left: 6px;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  background: rgba(0,0,0,0.2);
+  border-radius: 2px;
+  padding: 1px 4px;
+  line-height: 1.4;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Undo button style */
+#undo-btn {
+  opacity: 0.85;
+}
+
+#undo-btn:hover {
+  opacity: 1;
 }

@@ -7,12 +7,25 @@
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="../assets/tierlist-shared.css" />
   <link rel="shortcut icon" href="https://www.coupcritique.fr/images/types/icon/normal.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
+  <header class="site-header">
+    <div class="header-logo">
+      <a href="../index.html" class="logo-name">PGBMAX</a>
+      <span class="header-sep">·</span>
+      <span class="header-sub">Tier Lists RSL</span>
+    </div>
+    <nav class="header-nav">
+      <a href="../index.html" class="nav-pill">🏠 Hub</a>
+      <a href="https://fr-rsl.github.io" target="_blank" rel="noopener" class="nav-pill nav-pill-ext">Guide FR RSL ↗</a>
+    </nav>
+  </header>
   <div id="capture-zone">
     <div class="top-bar">
-		<button onclick="window.location.href='../index.html'">🏠 Retourner au hub</button>
       <button onclick="exportImage()">📸 Exporter en image</button>
       <button onclick="resetTierList()">🔄 Réinitialiser</button>
       <button onclick="addTier()">➕ Ajouter une catégorie</button>
@@ -23,5 +36,6 @@
     <div id="unranked-container" class="drop-zone"></div>
   </div>
   <script src="script.js"></script>
+  <script src="../assets/tierlist-ux.js"></script>
 </body>
 </html>
