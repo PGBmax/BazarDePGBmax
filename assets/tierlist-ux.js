@@ -28,11 +28,14 @@
   function patchSaveState() {
     const orig = window.saveState;
     if (typeof orig !== 'function') return;
+    let _saving = false;
     window.saveState = function () {
+      if (_saving) return;
+      _saving = true;
       pushUndo();
       orig.apply(this, arguments);
-      showToast('✓ Sauvegardé');
       updateAll();
+      _saving = false;
     };
   }
 
@@ -253,14 +256,20 @@
       const h1 = document.querySelector('h1');
       const name = (h1?.textContent?.trim() || 'tierlist').replace(/\s+/g, '-').toLowerCase();
       const captureZone = document.getElementById('capture-zone');
-      // hide the site-header and top-bar from capture
-      const siteHeader = document.querySelector('.site-header');
-      const topBar     = document.querySelector('.top-bar');
-      const uxKbHint   = document.getElementById('ux-kb-hint');
-      const uxUnhdr    = document.getElementById('ux-unranked-header');
-      [siteHeader, topBar, uxKbHint, uxUnhdr].forEach(el => { if (el) el.style.display = 'none'; });
+      // hide the site-header, top-bar and unranked section from capture
+      const siteHeader    = document.querySelector('.site-header');
+      const topBar        = document.querySelector('.top-bar');
+      const uxKbHint      = document.getElementById('ux-kb-hint');
+      const uxUnhdr       = document.getElementById('ux-unranked-header');
+      const unrankedBox   = document.getElementById('unranked-container');
+      const h2Below       = document.querySelector('#tier-list ~ h2');
+      [siteHeader, topBar, uxKbHint, uxUnhdr, unrankedBox, h2Below].forEach(el => { if (el) el.style.display = 'none'; });
+      // Add bottom breathing room so the last tier isn't cut tight
+      const prevPadding = captureZone.style.paddingBottom;
+      captureZone.style.paddingBottom = '24px';
       window.html2canvas(captureZone, { backgroundColor: '#090807', useCORS: true }).then(canvas => {
-        [siteHeader, topBar, uxKbHint, uxUnhdr].forEach(el => { if (el) el.style.display = ''; });
+        captureZone.style.paddingBottom = prevPadding;
+        [siteHeader, topBar, uxKbHint, uxUnhdr, unrankedBox, h2Below].forEach(el => { if (el) el.style.display = ''; });
         const link = document.createElement('a');
         link.download = `tierlist-${name}.png`;
         link.href = canvas.toDataURL();
@@ -270,17 +279,26 @@
   }
 
   // ─── 10. MutationObserver ──────────────────────────────────────
+  let _obsUpdating = false;
+
   function setupObserver() {
     const tierList = document.getElementById('tier-list');
     const unranked = document.getElementById('unranked-container');
     if (!tierList || !unranked) return;
 
-    const obs = new MutationObserver(() => {
+    const obs = new MutationObserver((mutations) => {
+      if (_obsUpdating) return;
+      // Only react when actual IMG nodes are added/removed (not our own badge spans)
+      const hasImgChange = mutations.some(m =>
+        [...m.addedNodes, ...m.removedNodes].some(n => n.nodeName === 'IMG')
+      );
+      if (!hasImgChange) return;
+      _obsUpdating = true;
       updateAll();
-      // Re-attach hover tracking on new images
       [...document.querySelectorAll('#unranked-container img')].forEach(img => {
         if (!img._uxHover) { img._uxHover = true; addHoverTracking(img); }
       });
+      _obsUpdating = false;
     });
     obs.observe(tierList,  { childList: true, subtree: true });
     obs.observe(unranked,  { childList: true, subtree: true });

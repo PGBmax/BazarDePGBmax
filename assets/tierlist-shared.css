@@ -218,7 +218,7 @@ button:active {
   position: relative;
   width: 100px;
   min-height: 84px;
-  height: 100%;
+  align-self: stretch;   /* colle au parent même quand il grandit */
   flex-shrink: 0;
   display: flex;
 }
@@ -226,7 +226,7 @@ button:active {
 .rank-label {
   width: 100%;
   min-height: 84px;
-  height: 100%;
+  flex: 1;               /* prend toute la hauteur du wrapper */
   font-weight: 700;
   font-size: 1.2em;
   display: flex;
@@ -731,18 +731,7 @@ img.dragging {
   animation: ux-drop-flash 0.4s ease forwards;
 }
 
-/* ── Empty tier hint ─────────────────────────────── */
-.tier-content:empty::after {
-  content: 'Glisser ici…';
-  display: block;
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  font-style: italic;
-  padding: 0 10px;
-  opacity: 0.4;
-  pointer-events: none;
-  white-space: nowrap;
-}
+
 
 /* ── Add-tier modal close btn ────────────────────── */
 .ux-modal-close {
