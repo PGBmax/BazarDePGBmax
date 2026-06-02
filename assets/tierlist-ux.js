@@ -6,7 +6,6 @@
   'use strict';
 
   // ─── State ────────────────────────────────────────────────────
-  let hoveredImg = null;   // last img hovered in unranked
   let undoStack  = [];     // array of serialised states
 
   // ─── 1. Toast ────────────────────────────────────────────────
@@ -75,7 +74,6 @@
         const img = document.createElement('img');
         img.src = src;
         window.addDragEvents(img);
-        addHoverTracking(img);
         content.appendChild(img);
       });
     });
@@ -84,7 +82,6 @@
       const img = document.createElement('img');
       img.src = src;
       window.addDragEvents(img);
-      addHoverTracking(img);
       unranked.appendChild(img);
     });
     showToast('↩ Annulé', 'warn');
@@ -153,18 +150,8 @@
     header.className = 'ux-unranked-header';
     header.innerHTML = `
       <span class="ux-unranked-title">▌ Non classés</span>
-      <span class="ux-unranked-count" id="ux-unranked-count">0</span>
-      <input type="search" id="ux-search" class="ux-search" placeholder="Filtrer…" autocomplete="off">`;
+      <span class="ux-unranked-count" id="ux-unranked-count">0</span>`;
     unranked.parentNode.insertBefore(header, unranked);
-
-    const searchInput = header.querySelector('#ux-search');
-    searchInput.addEventListener('input', () => {
-      const q = searchInput.value.trim().toLowerCase();
-      [...unranked.querySelectorAll('img')].forEach(img => {
-        const name = img.src.split('/').pop().replace(/\.\w+$/, '').toLowerCase();
-        img.style.display = (!q || name.includes(q)) ? '' : 'none';
-      });
-    });
   }
 
   function updateUnrankedCount() {
@@ -174,40 +161,7 @@
     badge.textContent = unranked.querySelectorAll('img').length;
   }
 
-  // ─── 7. Keyboard shortcuts (1-9 → tier 1-9) ──────────────────
-  function setupKeyboardShortcuts() {
-    // Inject shortcut hint strip above tier list
-    const tierListEl = document.getElementById('tier-list');
-    if (!tierListEl || document.getElementById('ux-kb-hint')) return;
-    const hint = document.createElement('div');
-    hint.id = 'ux-kb-hint';
-    hint.className = 'ux-kb-hint';
-    hint.textContent = '⌨ Survole une image + presse 1–9 pour la classer rapidement · Ctrl+Z pour annuler';
-    tierListEl.parentNode.insertBefore(hint, tierListEl);
-
-    document.addEventListener('keydown', e => {
-      if (e.target.isContentEditable || e.target.tagName === 'INPUT') return;
-      const num = parseInt(e.key, 10);
-      if (!hoveredImg || isNaN(num) || num < 1) return;
-      const tiers = [...document.querySelectorAll('#tier-list .tier')];
-      const target = tiers[num - 1];
-      if (!target) return;
-      const content = target.querySelector('.tier-content');
-      if (!content) return;
-      content.appendChild(hoveredImg);
-      hoveredImg.classList.add('ux-drop-flash');
-      setTimeout(() => hoveredImg?.classList.remove('ux-drop-flash'), 400);
-      if (typeof window.saveState === 'function') window.saveState();
-      e.preventDefault();
-    });
-  }
-
-  function addHoverTracking(img) {
-    img.addEventListener('mouseenter', () => { hoveredImg = img; });
-    img.addEventListener('mouseleave', () => { if (hoveredImg === img) hoveredImg = null; });
-  }
-
-  // ─── 8. Patch addTier (replace prompt with modal) ────────────
+  // ─── 7. Patch addTier (replace prompt with modal) ────────────
   function patchAddTier() {
     if (typeof window.createTier !== 'function') return;
     window.addTier = function () {
@@ -259,17 +213,16 @@
       // hide the site-header, top-bar and unranked section from capture
       const siteHeader    = document.querySelector('.site-header');
       const topBar        = document.querySelector('.top-bar');
-      const uxKbHint      = document.getElementById('ux-kb-hint');
       const uxUnhdr       = document.getElementById('ux-unranked-header');
       const unrankedBox   = document.getElementById('unranked-container');
       const h2Below       = document.querySelector('#tier-list ~ h2');
-      [siteHeader, topBar, uxKbHint, uxUnhdr, unrankedBox, h2Below].forEach(el => { if (el) el.style.display = 'none'; });
+      [siteHeader, topBar, uxUnhdr, unrankedBox, h2Below].forEach(el => { if (el) el.style.display = 'none'; });
       // Add bottom breathing room so the last tier isn't cut tight
       const prevPadding = captureZone.style.paddingBottom;
       captureZone.style.paddingBottom = '24px';
       window.html2canvas(captureZone, { backgroundColor: '#090807', useCORS: true }).then(canvas => {
         captureZone.style.paddingBottom = prevPadding;
-        [siteHeader, topBar, uxKbHint, uxUnhdr, unrankedBox, h2Below].forEach(el => { if (el) el.style.display = ''; });
+        [siteHeader, topBar, uxUnhdr, unrankedBox, h2Below].forEach(el => { if (el) el.style.display = ''; });
         const link = document.createElement('a');
         link.download = `tierlist-${name}.png`;
         link.href = canvas.toDataURL();
@@ -295,9 +248,6 @@
       if (!hasImgChange) return;
       _obsUpdating = true;
       updateAll();
-      [...document.querySelectorAll('#unranked-container img')].forEach(img => {
-        if (!img._uxHover) { img._uxHover = true; addHoverTracking(img); }
-      });
       _obsUpdating = false;
     });
     obs.observe(tierList,  { childList: true, subtree: true });
@@ -320,13 +270,7 @@
       patchExport();
       injectProgressTracker();
       injectUnrankedHeader();
-      setupKeyboardShortcuts();
       setupObserver();
-      // Attach hover tracking to already-loaded images
-      [...document.querySelectorAll('#unranked-container img')].forEach(img => {
-        img._uxHover = true;
-        addHoverTracking(img);
-      });
       updateAll();
     }, 200); // wait for script.js DOMContentLoaded to fire first
   }

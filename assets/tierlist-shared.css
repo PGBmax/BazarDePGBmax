@@ -709,18 +709,6 @@ img.dragging {
   color: var(--text-muted);
 }
 
-/* ── Keyboard shortcut hint ──────────────────────── */
-.ux-kb-hint {
-  max-width: 1100px;
-  margin: 0.6rem auto 0.2rem;
-  padding: 0 1rem;
-  font-size: 0.72rem;
-  color: var(--text-muted);
-  font-style: italic;
-  text-align: center;
-  opacity: 0.7;
-}
-
 /* ── Drop flash animation ────────────────────────── */
 @keyframes ux-drop-flash {
   0%   { outline: 2px solid var(--primary); outline-offset: 2px; }
@@ -755,7 +743,5 @@ img.dragging {
 /* ── Responsive tweaks ───────────────────────────── */
 @media (max-width: 600px) {
   .ux-progress-bar-track { width: 60px; }
-  .ux-search { width: 110px; }
-  .ux-kb-hint { display: none; }
 }
 
